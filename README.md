@@ -264,3 +264,32 @@ Save in Keychain
 ↓
 
 Dashboard
+
+
+// loading flow
+
+User taps Login
+        │
+        ▼
+Loading Overlay appears
+        │
+        ▼
+API Request
+        │
+        ▼
+Success
+        │
+        ▼
+Loading Overlay disappears
+        │
+        ▼
+┌──────────────────────────┐
+│   Login Successful       │
+│                          │
+│ You have logged in.      │
+│                          │
+│          OK              │
+└──────────────────────────┘
+        │
+        ▼
+Navigate to Dashboard

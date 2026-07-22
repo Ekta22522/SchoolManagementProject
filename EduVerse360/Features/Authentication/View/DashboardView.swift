@@ -8,7 +8,6 @@
 import SwiftUI
 
 struct DashboardView: View {
-    
     var body: some View {
         
         Text("Welcome to Dashboard")
@@ -17,7 +16,7 @@ struct DashboardView: View {
             .fontWeight(.bold)
             .padding()
         Button( action: {
-            
+    
         }, label: {
             Text("Logout")
                 .font(.headline)

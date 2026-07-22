@@ -8,6 +8,9 @@
 import SwiftUI
 
 struct MainTabView: View {
+    
+    @Environment(NavigationRouter.self) private var router
+    
     var body: some View {
         TabView{
             HomeView()
@@ -19,6 +22,7 @@ struct MainTabView: View {
                 .tabItem{
                     Label("Setting",systemImage: "gearshape")
                 }
+                
             
             
         }

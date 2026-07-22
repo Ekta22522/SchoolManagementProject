@@ -71,6 +71,7 @@ struct RegisterView: View {
                                     .padding()
                                 TextField("john doe",text: $fullName)
                                 
+                                
                             }
                             .frame(width:300, height:45)
                             .overlay(

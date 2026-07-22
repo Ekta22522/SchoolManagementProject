@@ -8,15 +8,13 @@
 import Foundation
 import Combine
 
-enum LoginError: Error {
+enum LoginError: LocalizedError {
     case invalidCredentials
-    case invalidUsername
-    case invalidPassword
     case fieldsAreRequired
     case usernameEmpty
     case passwordEmpty
     case userNotFound
-    case Passwordmustbeatleast8Characters
+    case PasswordMustBeAtLeast8Characters
     
 }
 
@@ -42,7 +40,7 @@ class LoginMockAPI : LoginAPIProtocol {
             throw LoginError.passwordEmpty
         }
         if (req.password.count < 8){
-            throw LoginError.Passwordmustbeatleast8Characters
+            throw LoginError.PasswordMustBeAtLeast8Characters
         }
        
         
@@ -52,7 +50,7 @@ class LoginMockAPI : LoginAPIProtocol {
         }
         
 //        if isUserAvailableInDb {
-//            return LoginResponse(token: "token1234567890")
+//            return LoginResponse(token: "token1234567890") // same like guard two method
 //        }else{
 //            throw LoginError.invalidCredentials
 //        }

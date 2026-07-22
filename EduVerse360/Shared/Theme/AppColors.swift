@@ -13,5 +13,5 @@ extension Color{
     static let secondaryText = Color(hex:"434656")
     static let textFieldColor = Color(hex:"C3C5D9")
     static let thirdText=Color(hex:"737688")
-    
+    static let greenColor = Color(hex:"005C7B")
 }

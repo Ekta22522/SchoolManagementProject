@@ -8,12 +8,14 @@
 import SwiftUI
 
 struct HomeView: View {
+    
+
     var body: some View {
+     
         ScrollView{
             ZStack(){
                 Rectangle()
                     .fill(Color.primary)
-                
                     .ignoresSafeArea()
                 
                 VStack(){
@@ -83,7 +85,8 @@ struct HomeView: View {
                     }
                     .padding()
                 }
-            }
+            } .padding(.bottom)
+                .background(Color.primary)
             
             
             //Join Now Button
@@ -105,7 +108,9 @@ struct HomeView: View {
             .padding(.top)
             
             
-            Button( action: {}, label: {
+            Button( action: {
+              
+            }, label: {
                 Text("Sign In")
                     .underline()
                     .font(.title2)
@@ -140,9 +145,13 @@ struct HomeView: View {
             
             
             
-            
+           Spacer()
             
         }
+       
+         
+        
+    
         
     }
 }

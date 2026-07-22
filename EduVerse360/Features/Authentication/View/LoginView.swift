@@ -7,17 +7,22 @@
 import Foundation
 import SwiftUI
 
+enum Field: Hashable{
+    case username
+    case password
+}
 struct LoginView: View {
+
+    @FocusState private var focusedField : Field?
+    @Environment(NavigationRouter.self) private var router
+    @Environment(UserSession.self) private var session
     
-    enum Route: Hashable {
-        case dashboard
-//        case profile
-//        case register
-    }
-    @State private var path = NavigationPath()
     @State var viewModel = LoginViewModel(loginservice: LoginMockAPI())
+    
+    
     var body: some View {
-        NavigationStack (path: $path){
+        
+        
         ScrollView{
             ZStack{
                 RoundedRectangle(cornerRadius: 10)
@@ -60,60 +65,28 @@ struct LoginView: View {
                     
                     //Email
                     VStack(alignment:.leading){
+                        AppTextField(title: "Email",
+                                     imageName: "email",
+                                     placeholder: "Enter you Email",
+                                     field: .username,
+                                     error: viewModel.emailError,
+                                     text: $viewModel.email,
+                                     focusedField: $focusedField)
                         
-                        VStack(alignment:.leading) {
-                            Text("INSTITUTION EMAIL")
-                                .font(.caption)
-                                .foregroundColor(.secondaryText)
-                                .fontWeight(.semibold)
-                            
-                            HStack {
-                                Image("email")
-                                    .foregroundStyle(.gray)
-                                    .padding()
-                                
-                                TextField("enter your password",text: $viewModel.userName)
-                                
-                            }
-                            .frame(width:300, height:45)
-                            .overlay(
-                                RoundedRectangle(cornerRadius: 10)
-                                    .stroke(Color.textFieldColor, lineWidth: 1)
-                                
-                            )
-                            
-                            
-                        }
-                        .padding(.bottom)
+                        
                         
                         // Password
                         
-                        VStack(alignment:.leading) {
-                            Text("PASSWORD")
-                                .font(.caption)
-                                .foregroundColor(.secondaryText)
-                                .fontWeight(.semibold)
-                            
-                            HStack {
-                                Image("lock")
-                                    .foregroundStyle(.gray)
-                                    .padding()
-                                
-                                TextField("enter your password",text: $viewModel.password)
-                                Image("eye")
-                                    .foregroundStyle(.gray)
-                                    .padding()
-                            }
-                            .frame(width:300, height:45)
-                            .overlay(
-                                RoundedRectangle(cornerRadius: 10)
-                                    .stroke(Color.textFieldColor, lineWidth: 1)
-                                
-                            )
-                            
-                            
-                        }
-                        .padding(.bottom)
+                        AppTextField(title:"Password",
+                                     imageName: "lock",
+                                     placeholder: "Enter your password",
+                                     field:.password,
+                                     error: viewModel.passwordError,
+                                     text:$viewModel.password,
+                                     focusedField: $focusedField
+                        )
+                        
+                        
                         
                         // Remember me
                         
@@ -136,6 +109,9 @@ struct LoginView: View {
                             Text("Forgot Password?")
                                 .font(.subheadline)
                                 .foregroundColor(.primary)
+                                .onTapGesture {
+                                    router.goToForgotPassword()
+                                }
                             
                             
                         }
@@ -143,27 +119,44 @@ struct LoginView: View {
                     }
                     .frame(width:300)
                     .padding()
-                    
+                    .alert(
+                        "Error",
+                        isPresented: Binding(
+                            get: { viewModel.showAlert },
+                            set: { viewModel.showAlert = $0 }
+                        )
+                    ) {
+                        Button("OK", role: .cancel) { }
+                    } message: {
+                        Text(viewModel.alertMessage ?? "Error 1")
+                    }
                     //Login Button
                     Button( action: {
+                        viewModel.checkAllFields()
+//                        viewModel.validateEmail()
+//                        viewModel.validatePassword()
                         Task{
-                          await viewModel.loginUser()
+                            await viewModel.loginUser()
                             if viewModel.isLoginSucceess {
-                                path.append(Route.dashboard)
+                                viewModel.updateUsername(sess: session)
+                                viewModel.saveToken(sess: session)
+                                router.goToMainTab()
                             }
-                          
+                            
                         }
                         
-                    }, label: {
-                            Text("Login")
-                                .font(.headline)
-                                .fontWeight(.bold)
-                                .foregroundColor(Color.white)
-                                .frame(width:200)
-                                .padding()
-                                .background(Color.primary)
-                                .cornerRadius(10)
-                            
+                        
+                    }
+                            , label: {
+                        Text("Login")
+                            .font(.headline)
+                            .fontWeight(.bold)
+                            .foregroundColor(Color.white)
+                            .frame(width:200)
+                            .padding()
+                            .background(Color.primary)
+                            .cornerRadius(10)
+                        
                         
                     }
                     )
@@ -221,20 +214,29 @@ struct LoginView: View {
                 
             }
             
+            if let error = viewModel.generalError {
+                Text(error)
+                    .foregroundColor(.red)
+            }
+            
+            if let error = viewModel.allFieldsError {
+                Text(error)
+                    .foregroundColor(.red)
+            }
+            
+            if let error = viewModel.userNotFound{
+                Text(error)
+                .foregroundColor(.red)        }
+            
         }
-        .navigationDestination(for: Route.self) { route in
-
-            DashboardView()
-
+        .onAppear {
+            DispatchQueue.main.async {
+                focusedField = .username
+            }
         }
-  
-    }
-
         
-        if let errorMessage = viewModel.errorMessage {
-            Text(errorMessage)
-                .foregroundColor(.primary)
-        }
+        
+        
         
     }
 }
