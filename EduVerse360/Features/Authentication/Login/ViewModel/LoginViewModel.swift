@@ -30,8 +30,8 @@ class LoginViewModel{
     
   
     
-    private let loginService : LoginAPIProtocol
-    init (loginservice:LoginAPIProtocol = LoginMockAPI()){
+    private let loginService : LoginProtocol
+    init (loginservice:LoginProtocol = LoginMockAPI()){
         self.loginService = loginservice
     }
     
@@ -113,7 +113,7 @@ class LoginViewModel{
         defer{isLoading = false}
         
         do{
-            let loginRequest = LoginRequest(username:email, password: password)
+            let loginRequest = LoginRequest(email:email, password: password)
             let loginResponse = try await self.loginService.login(req: loginRequest)
             UserDefaultsManager.shared.save(data: loginResponse.token, key:.token)
             isLoginSucceess = true
@@ -147,6 +147,9 @@ class LoginViewModel{
             case .userNotFound:
                 alertMessage = "User not found."
                 showAlert = true
+            
+            default:
+                break
             
             }
             

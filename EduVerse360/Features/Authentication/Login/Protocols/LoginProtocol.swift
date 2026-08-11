@@ -6,6 +6,6 @@
 //
 
 import Foundation
-protocol LoginAPIProtocol{
+protocol LoginProtocol{
     func login(req: LoginRequest) async throws -> LoginResponse
 }

@@ -1,18 +1,24 @@
 //
-//  ForgotPassword.swift
+//  ResetPasswordView.swift
 //  EduVerse360
 //
-//  Created by Ekta Rai on 22/07/2026.
+//  Created by Ekta Rai on 10/08/2026.
 //
 
 import SwiftUI
+import Foundation
 
-struct ForgotPassword: View {
+struct ResetPasswordView: View {
+    
+    @State var viewModel = ResetPasswordViewModel()
     @FocusState private var focusedField : Field?
     @Environment(NavigationRouter.self) private var router
     
-    
-    @State var viewModel = LoginViewModel()
+    init(email: String) {
+          let viewModel = ResetPasswordViewModel()
+          viewModel.email = email
+          _viewModel = State(initialValue: viewModel)
+      }
     
     var body: some View {
         VStack(alignment:.center){
@@ -32,10 +38,10 @@ struct ForgotPassword: View {
                 )
             
             VStack(spacing:10){
-                Text("Forgot Password?")
+                Text("Create New Password")
                     .font(.largeTitle)
                     .fontWeight(.bold)
-                Text("Enter your email address and we'll send you a password reset link.")
+                Text("Your new password must be different from previous passwords.")
                     .multilineTextAlignment(.center)
                     .foregroundColor(Color.secondaryText)
                 
@@ -43,20 +49,34 @@ struct ForgotPassword: View {
             .padding()
             
             VStack(){
-                AppTextField(title: "EMAIL ADDRESS",
-                             imageName: "email",
-                             placeholder: "Enter your Email",
+                
+                AppTextField(title: "New Password",
+                             imageName: "lock",
+                             placeholder: "Enter New Passowrd",
                              field: .username,
                              error: viewModel.emailError,
-                             text: $viewModel.email,
+                             text: $viewModel.password,
+                             focusedField: $focusedField)
+                
+                AppTextField(title: "Confirm Password",
+                             imageName: "lock",
+                             placeholder: "Confirm Passowrd",
+                             field: .username,
+                             error: viewModel.emailError,
+                             text: $viewModel.confirmPassword,
                              focusedField: $focusedField)
                 
                 Button(action:{
-                    
+                    Task{
+                        await viewModel.resetPassword()
+                        if viewModel.isResetPasswordSucess{
+                            router.goToLogin()
+                        }
+                    }
                 },
                        label: {
                     HStack(spacing:nil){
-                        Text("Send Reset Link")
+                        Text("ok")
                             .foregroundColor(Color.white)
                             .fontWeight(.semibold)
                             .padding()
@@ -88,5 +108,5 @@ struct ForgotPassword: View {
 
 
 #Preview {
-    ForgotPassword()
+    ResetPasswordView(email: "")
 }

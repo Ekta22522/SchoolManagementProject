@@ -22,4 +22,8 @@ class UserSession {
         isLoggedIn = (token != nil)
     }
     
+    func logout() {
+           UserDefaultsManager.shared.remove(key: .token)
+           isLoggedIn = false
+       }
 }

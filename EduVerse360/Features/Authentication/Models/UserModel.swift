@@ -4,11 +4,23 @@
 //
 //  Created by Ekta Rai on 12/07/2026.
 //
+import Foundation
 
-struct UserModel{
-    let id: Int
-    let firstName : String
-    let lastName : String
-    let userName : String
-    let password: String
+enum UserRole: String{
+    case superAdmin = "superAdmin"
+    case user = "user"
+    case student = "student"
 }
+
+struct UserModel: Codable,Identifiable{
+    let id: Int
+    let username : String
+    let email : String
+    let role : String
+    let isVerified : Bool
+    let createdAt : String
+  
+}
+   
+
+

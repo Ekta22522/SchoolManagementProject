@@ -11,10 +11,16 @@ import Observation
 
 enum Router : Hashable{
     case login
+    case register
 //    case dashboard
     case profile
     case mainTab
     case forgotPassword
+    case studentDetails(id: Int)
+    case teacherDetails(id:Int)
+    case verifyRegisterationOTP(email:String)
+    case verifyOtp(email:String)
+    case resetPassword(email:String)
 //    case settings
 }
 
@@ -29,19 +35,43 @@ class NavigationRouter{
     func goToMainTab(){
         path.append(Router.mainTab)
     }
+    
     func goToProfile(){
         path.append(Router.profile)
     }
     
     func goToLogin(){
-        path.append((Router.login))
+        path = NavigationPath()
+        path.append(Router.login)
+        
     }
-//    func goToSettings(){
-//        path.append(Router.settings)
-//    }
     
+    
+    func goToRegister(){
+        path.append(Router.register)
+        
+    }
+    
+    func goToVerifyRegisterationOTP(email: String){
+        path.append(Router.verifyRegisterationOTP(email:email))
+    }
+
+    func goToVerifyOtp (email:String){
+        path.append(Router.verifyOtp(email: email))
+    }
     func goToForgotPassword(){
         path.append(Router.forgotPassword)
+    }
+    
+    func goToResetPassword(email:String){
+        path.append(Router.resetPassword(email: email))
+    }
+    func goToStudentDetail(id: Int){
+        path.append(Router.studentDetails(id: id))
+    }
+    
+    func goToTeacherDetail(id:Int){
+        path.append(Router.teacherDetails(id: id))
     }
 }
 

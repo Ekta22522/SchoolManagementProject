@@ -10,6 +10,8 @@ import SwiftUI
 struct ProfileView: View {
     
     @Environment(NavigationRouter.self) private var router
+    @Environment(UserSession.self) private var session
+
     
     var body: some View {
         VStack(spacing:10) {
@@ -23,8 +25,9 @@ struct ProfileView: View {
                 .foregroundColor(Color.primary)
             
             Button(action:{
-                UserDefaultsManager.shared.remove(key:.token)
-                router.goToLogin()
+                session.logout()
+               
+                print("logout successfully")
             }, label: {
                 Text("Logout")
                     .font(.headline)

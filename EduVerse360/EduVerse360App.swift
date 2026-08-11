@@ -25,8 +25,23 @@ struct EduVerse360App: App {
                             ProfileView()
                         case.login:
                             LoginView()
+                        case.register:
+                            RegisterSessionView()
+                        case.verifyRegisterationOTP(let email):
+                            VerifyRegistrationView(email:email)
                         case.forgotPassword:
-                            ForgotPassword()
+                            ForgotPasswordView()
+                        case.verifyOtp(let email):
+                            VerifyOtpView(email:email)
+                        case.resetPassword(let email):
+                            ResetPasswordView(email:email)
+                            
+                            
+                        case .studentDetails(let id):
+                            StudentDetailView(studentId: id)
+                            
+                        case.teacherDetails(let id):
+                            TeacherDetailView(teacherId: id)
                         }
                     }
             }

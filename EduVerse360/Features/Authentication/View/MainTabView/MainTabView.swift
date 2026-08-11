@@ -17,6 +17,22 @@ struct MainTabView: View {
                 .tabItem{
                     Label("Home",systemImage: "house")
                 }
+            
+            RegisterSessionView()
+                 .tabItem{
+                    Label("Register",systemImage: "house")
+                }
+            
+            
+            StudentsListView()
+                .tabItem{
+                    Label("Students",systemImage: "graduationcap.fill")
+                }
+            
+            TeachersListView()
+                .tabItem{
+                    Label("Teachers",systemImage: "person.3")
+                }
         
             SettingsView()
                 .tabItem{
