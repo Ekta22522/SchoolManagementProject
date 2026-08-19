@@ -108,8 +108,12 @@ struct RegisterSessionView: View {
                                 viewModel.role = .student
                             }
                             
-                            Button("Super Admin") {
-                                viewModel.role = .superAdmin
+                            Button("Teacher") {
+                                viewModel.role = .teacher
+                            }
+                            
+                            Button("School Admin") {
+                                viewModel.role = .schoolAdmin
                             }
                             
                         } label: {

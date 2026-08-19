@@ -21,6 +21,11 @@ enum Router : Hashable{
     case verifyRegisterationOTP(email:String)
     case verifyOtp(email:String)
     case resetPassword(email:String)
+    case classes
+    case allClasses
+    case updateClass
+    case classById(id:String)
+    
 //    case settings
 }
 
@@ -72,6 +77,18 @@ class NavigationRouter{
     
     func goToTeacherDetail(id:Int){
         path.append(Router.teacherDetails(id: id))
+    }
+    
+    func goToClasses(){
+        path.append(Router.classes)
+    }
+    
+    func goToAllClasses(){
+        path.append(Router.allClasses)
+    }
+    
+    func goToClassById(id:String){
+        path.append(Router.classById(id: id))
     }
 }
 

@@ -18,7 +18,7 @@ struct UserDefaultsManager{
         case email = "email"
         case firstName = "first_name"
         case lastName = "last_name"
-        
+        case rememberMe = "remember_me"
     }
     
     // Save Function

@@ -6,11 +6,16 @@
 //
 import Foundation
 
+
 enum UserRole: String{
     case superAdmin = "superAdmin"
     case user = "user"
     case student = "student"
+    case teacher = "teacher"
+    case schoolAdmin = "school_admin"
 }
+
+
 
 struct UserModel: Codable,Identifiable{
     let id: Int
@@ -19,7 +24,6 @@ struct UserModel: Codable,Identifiable{
     let role : String
     let isVerified : Bool
     let createdAt : String
-  
 }
    
 

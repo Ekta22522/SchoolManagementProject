@@ -11,19 +11,23 @@ import Observation
 
 @Observable
 class UserSession {
-
-    var username = "Email"
-    var password = "Password"
+    var username:String?
+    var user: UserModel?
     var token: String? = UserDefaultsManager.shared.read(key: .token)
     var isLoggedIn = false
 
     init() {
-        token = UserDefaultsManager.shared.read(key: .token)
         isLoggedIn = (token != nil)
     }
     
     func logout() {
            UserDefaultsManager.shared.remove(key: .token)
+           user = nil
            isLoggedIn = false
        }
+    
+    func updateUserModel(model: UserModel?){
+        self.user = model
+    }
+    
 }

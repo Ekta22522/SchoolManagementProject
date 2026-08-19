@@ -32,7 +32,9 @@ final class APIClient{
         
         if let body {
             
-            let requestBody = try JSONEncoder().encode(body)
+            let encoder =  JSONEncoder()
+            
+            let requestBody = try encoder.encode(body)
 //            debugPrint("requestBody: \(requestBody)")
             request.httpBody = requestBody
         }
@@ -50,6 +52,9 @@ final class APIClient{
             throw NetworkError.serverError(response.statusCode)
         }
         
-        return try JSONDecoder().decode(T.self,from: data)
+        let decoder = JSONDecoder()
+        
+        
+        return try decoder.decode(T.self,from: data)
     }
 }

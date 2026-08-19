@@ -10,6 +10,7 @@ import SwiftUI
 struct MainTabView: View {
     
     @Environment(NavigationRouter.self) private var router
+    @Environment(UserSession.self) private var session
     
     var body: some View {
         TabView{
@@ -18,21 +19,30 @@ struct MainTabView: View {
                     Label("Home",systemImage: "house")
                 }
             
-            RegisterSessionView()
-                 .tabItem{
-                    Label("Register",systemImage: "house")
-                }
-            
-            
-            StudentsListView()
+            if session.user?.role == UserRole.teacher.rawValue {
+                TeacherOnlyView()
+                    .tabItem{
+                        Label("Teachers only",systemImage: "graduationcap.fill")
+                    }
+            }else{
+                StudentsListView()
+                    .tabItem{
+                        Label("Students",systemImage: "graduationcap.fill")
+                    }
+                
+            }
+            NavigationStack {
+                AllClassesView()
+            }
                 .tabItem{
-                    Label("Students",systemImage: "graduationcap.fill")
+                    Label("Class",systemImage:"applepencil.tip")
                 }
             
             TeachersListView()
                 .tabItem{
                     Label("Teachers",systemImage: "person.3")
                 }
+            
         
             SettingsView()
                 .tabItem{

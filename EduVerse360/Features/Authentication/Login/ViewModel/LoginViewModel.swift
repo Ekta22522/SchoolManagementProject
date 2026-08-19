@@ -12,9 +12,9 @@ import Observation
 
 class LoginViewModel{
 
-    var password = ""
-    var email = ""
-    var rememberMe = false
+    var password: String = ""
+    var email: String = ""
+    var rememberMe: Bool = UserDefaultsManager.shared.read(key: .rememberMe)
     var isLoading = false
     var token = ""
     var errorMessage: String?
@@ -28,11 +28,27 @@ class LoginViewModel{
     
     var isLoginSucceess = false
     
-  
-    
+    var userModel: UserModel?
+
     private let loginService : LoginProtocol
+    
     init (loginservice:LoginProtocol = LoginMockAPI()){
         self.loginService = loginservice
+        if rememberMe {
+            email = UserDefaultsManager.shared.read(key: .email) ?? ""
+        }
+    }
+    
+    
+    func toggleRememberMe(){
+        rememberMe.toggle()
+        UserDefaultsManager.shared.save(data: rememberMe, key:.rememberMe)
+    }
+    
+    
+    
+    func updateUserModel(sess: UserSession){
+        sess.updateUserModel(model: userModel)
     }
     
     
@@ -117,6 +133,13 @@ class LoginViewModel{
             let loginResponse = try await self.loginService.login(req: loginRequest)
             UserDefaultsManager.shared.save(data: loginResponse.token, key:.token)
             isLoginSucceess = true
+            userModel = loginResponse.user
+            
+            if rememberMe {
+                UserDefaultsManager.shared.save(data: email, key: .email)
+            }else{
+                UserDefaultsManager.shared.remove(key: .email)
+            }
             print("Login Success:", isLoginSucceess)
             print("token:",loginResponse.token)
        

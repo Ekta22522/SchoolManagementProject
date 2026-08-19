@@ -10,7 +10,11 @@ import SwiftUI
 enum Field: Hashable{
     case username
     case password
+    case className
+    case description
 }
+
+
 struct LoginView: View {
     
     @FocusState private var focusedField : Field?
@@ -94,7 +98,7 @@ struct LoginView: View {
                             
                             HStack(spacing:10){
                                 Button {
-                                    viewModel.rememberMe.toggle()
+                                    viewModel.toggleRememberMe()
                                 } label: {
                                     Image(systemName: viewModel.rememberMe ? "checkmark.square.fill" : "square")
                                         .font(.title3)
@@ -143,6 +147,8 @@ struct LoginView: View {
                                     viewModel.updateUsername(sess: session)
                                     viewModel.saveToken(sess: session)
                                     session.isLoggedIn = true
+                                    
+                                    session.updateUserModel(model: viewModel.userModel)
                                     router.goToMainTab()
 //                                    print("Logged In:", session.isLoggedIn)
                                 }

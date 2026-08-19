@@ -21,7 +21,7 @@ class RegisterViewModel{
     var isLoading = false
     var token = ""
     var username = ""
-    var adminSecret = ""
+    var adminSecret = "admin-secret-2026"
     var errorMessage: String?
     var emailError:String?
     var allFieldsError: String?
@@ -93,7 +93,7 @@ class RegisterViewModel{
             print("Register Success:", isRegisterSucceess)
                     alertMessage = "User created successfully."
                     showAlert = true
-            print("token",token)
+            print("otp",registerResponse.otp)
         }catch  let error{
             self.errorMessage = error.localizedDescription
 
