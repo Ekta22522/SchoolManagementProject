@@ -7,6 +7,7 @@
 //
 
 import Foundation
+
 struct ClassReq: Encodable{
     
     let className : String

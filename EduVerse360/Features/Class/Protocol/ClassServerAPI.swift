@@ -8,7 +8,7 @@
 import Foundation
 
 class ClassServerAPI : ClassProtocol{
-    func getClass(req: ClassReq) async throws -> ClassRes {
+    func createClass(req: ClassReq) async throws -> ClassRes {
         do{
             let classRes: ClassRes = try await APIClient.shared.request(APIEndpoint.classes, body: req)
             return classRes
@@ -37,14 +37,23 @@ class ClassServerAPI : ClassProtocol{
         }
     }
     
-    func updateClass(id: String) async throws -> UpdateClassRes {
+    func updateClass(id: String, req: ClassReq) async throws -> UpdateClassRes {
         do{
-            let updateClassRes : UpdateClassRes = try await APIClient.shared.request(APIEndpoint.updateClass(id: id))
+            let updateClassRes : UpdateClassRes = try await APIClient.shared.request(APIEndpoint.updateClass(id: id), body: req)
             return updateClassRes
         }catch let error{
             throw error
         }
     }
     
+    
+    func deleteClass(id: String, req: ClassReq) async throws -> DeleteClassRes {
+        do{
+            let deleteClassRes : DeleteClassRes =  try await APIClient.shared.request(APIEndpoint.deleteClass(id: id), body: req)
+            return deleteClassRes
+        }catch let error{
+            throw error
+        }
+    }
     
 }

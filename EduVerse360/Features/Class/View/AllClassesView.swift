@@ -61,7 +61,7 @@ struct AllClassesView: View {
                     title: classItem.className,
                     subtitle: classItem.description,
                     action: {
-                        router.goToClassById(id: classItem.id)
+                        router.goToClassById(id: "\(classItem.id)")
                     })
             }
         }

@@ -35,7 +35,7 @@ class ClassViewModel{
         
         do{
             let classReq = ClassReq(className: className, description: description)
-            let classRes = try await self.classService.getClass(req: classReq)
+            let classRes = try await self.classService.createClass(req: classReq)
             isclassSuccess = true
             print(classReq.className,"Class Successfully submitted",isclassSuccess)
          

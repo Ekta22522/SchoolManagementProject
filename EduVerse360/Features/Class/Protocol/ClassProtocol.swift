@@ -6,8 +6,9 @@
 //
 
 protocol ClassProtocol{
-    func getClass (req: ClassReq) async throws -> ClassRes
+    func createClass (req: ClassReq) async throws -> ClassRes
     func getAllClasses () async throws -> AllclassesRes
     func getClassByID (id: String) async throws -> ClassByIDRes
-    func updateClass (id:String) async throws -> UpdateClassRes
+    func updateClass (id:String, req: ClassReq) async throws -> UpdateClassRes
+    func deleteClass (id:String, req: ClassReq)async throws -> DeleteClassRes
 }

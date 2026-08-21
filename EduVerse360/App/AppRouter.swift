@@ -23,8 +23,10 @@ enum Router : Hashable{
     case resetPassword(email:String)
     case classes
     case allClasses
-    case updateClass
+    case updateClass(id:String)
     case classById(id:String)
+    case createSection(id:String)
+    case deleteClass(id:String)
     
 //    case settings
 }
@@ -37,8 +39,15 @@ class NavigationRouter{
 //        path.append(Router.dashboard)
 //    }
     
+    
+    func pop(){
+        path.removeLast()
+    }
+    
     func goToMainTab(){
         path.append(Router.mainTab)
+        
+        
     }
     
     func goToProfile(){
@@ -89,6 +98,18 @@ class NavigationRouter{
     
     func goToClassById(id:String){
         path.append(Router.classById(id: id))
+    }
+    
+    func goToUpdateClass(id:String){
+        path.append(Router.updateClass(id: id))
+    }
+    
+    func goToDeleteClass(id:String){
+        path.append(Router.deleteClass(id: id))
+    }
+    
+    func goToCreateSection(id:String){
+        path.append(Router.createSection (id: id))
     }
 }
 

@@ -14,15 +14,18 @@ enum APIEndpoint {
     case forgotPassword
     case verifyOtp
     case resetPassword
+    case classes
+    case allClasses
+    case classByID(id: String)
+    case updateClass(id: String)
+    case deleteClass(id:String)
+    case createSection(id:String)
+    case allSection
     case profile
     case students
     case teachers
     case student(id:Int)
     case teacher(id:Int)
-    case classes
-    case allClasses
-    case classByID(id: String)
-    case updateClass(id: String)
     case uploadProfileImage(id:Int)
     case dashboard
 
@@ -32,10 +35,11 @@ extension APIEndpoint{
     var path : String{
         
         switch self{
+          
+        //authentication part
             
         case.login:
         return "/api/users/login"
-        
         case.register:
             return "/api/users/register"
         case.verifyRegisteration:
@@ -46,8 +50,9 @@ extension APIEndpoint{
             return "api/users/verify-otp"
         case.resetPassword:
             return "api/users/reset-password"
-        case.profile:
-            return "api/users/me"
+        
+        //Classes part
+            
         case.classes:
             return "api/classes"
         case.allClasses:
@@ -56,12 +61,23 @@ extension APIEndpoint{
             return "api/classes/\(id)"
         case.updateClass(let id):
             return "api/classes/\(id)"
+        case.deleteClass(let id):
+            return "api/classes/\(id)"
+            
+        //Section part
+            
+        case.createSection:
+            return "api/sections"
+         
+        case.allSection:
+            return "api/sections"
         case.students:
             return ""
             
         case.teachers:
             return ""
-            
+        case.profile:
+            return "api/users/me"
         case.student(let id):
             return ""
           
@@ -88,7 +104,8 @@ extension APIEndpoint{
             .forgotPassword,
             .verifyOtp,
             .classes,
-            .resetPassword:
+            .resetPassword,
+            .createSection:
             return .POST
             
         case.students,
@@ -98,11 +115,15 @@ extension APIEndpoint{
             .dashboard,
             .teacher,
             .allClasses,
-            .classByID:
+            .classByID,
+            .allSection:
             return .GET
             
         case.updateClass:
             return.PUT
+            
+        case.deleteClass:
+            return.DELETE
             
         
         case.uploadProfileImage:

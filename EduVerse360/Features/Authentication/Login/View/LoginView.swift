@@ -12,6 +12,10 @@ enum Field: Hashable{
     case password
     case className
     case description
+    case id
+    case sectionName
+    case classTeacher
+    case capacity
 }
 
 

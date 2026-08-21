@@ -1,4 +1,11 @@
 //
+//  DeleteClassViewModel.swift
+//  EduVerse360
+//
+//  Created by Ekta Rai on 19/08/2026.
+//
+
+//
 //  UpdateViewModel.swift
 //  EduVerse360
 //
@@ -9,7 +16,7 @@ import Foundation
 import Observation
 
 @Observable
-class UpdateViewModel{
+class DeleteClassViewModel{
     var className = ""
     var description = ""
     var classNameError : String?
@@ -17,28 +24,29 @@ class UpdateViewModel{
     var errorMessage : String?
     var isLoading = false
     var classroom : Class?
-    var isUpdateClass = false
+    var isDeleteClass = false
     
-    private let updateService : ClassProtocol
-    init(updateservice : ClassProtocol = ClassServerAPI()){
-        self.updateService = updateservice
+    private let deleteService : ClassProtocol
+    init(deleteservice : ClassProtocol = ClassServerAPI()){
+        self.deleteService = deleteservice
     }
     
     func getClassById (id:String) async{
-        print("Update operation is started")
+        print("Delete operation is started")
         isLoading = true
         defer{
             isLoading = false
-            print("Update operation is finished")
+            print("Delete operation is finished")
         }
         
         do{
-            let response = try await self.updateService.getClassByID(id: id)
+            let response = try await self.deleteService.getClassByID(id: id)
             classroom = response.data
             className = response.data.className
             description = response.data.description
+           
      
-            print("Class Updated Successfully",isUpdateClass)
+            print("Class Deleted Successfully",isDeleteClass)
             
            
         }catch{
@@ -47,15 +55,15 @@ class UpdateViewModel{
     }
     
     
-    func updateClass(id: String) async {
+    func deleteClass(id: String) async {
         
        
         
         do{
             
             let classReq = ClassReq(className: className, description: description)
-            let response = try await self.updateService.updateClass(id: id, req: classReq)
-            isUpdateClass = true
+            let response = try await self.deleteService.deleteClass(id: id, req: classReq)
+            isDeleteClass = true
             
         }catch{
             errorMessage = error.localizedDescription

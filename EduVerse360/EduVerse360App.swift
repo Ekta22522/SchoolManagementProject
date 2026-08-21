@@ -48,6 +48,12 @@ struct EduVerse360App: App {
                             ClassView()
                         case .classById(let classID):
                             ClassByIdView(classId: classID)
+                        case.updateClass(let classID):
+                            UpdateClassView(classId:classID)
+                        case.deleteClass(let classID):
+                           DeleteClassView(classId:classID)
+                        case.createSection(let classID):
+                            SectionView(classId: classID)
                         }
                     }
             }
