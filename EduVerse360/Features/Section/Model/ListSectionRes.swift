@@ -7,6 +7,5 @@
 
 struct ListSectionRes:Decodable{
     let success: Bool
-    let message :String
     let data :[Section]
 }

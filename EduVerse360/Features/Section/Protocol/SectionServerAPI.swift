@@ -17,4 +17,50 @@ class SectionServerAPI : SectionProtocol{
         }
         
     }
+    
+    func listSection() async throws -> ListSectionRes  {
+        do{
+            let listSectionRes:ListSectionRes = try await APIClient.shared.request(APIEndpoint.allSection)
+            return listSectionRes
+        }catch let error{
+            throw error
+        }
+    }
+    
+    func getClassSectionById(id:String) async throws -> ClassSectionByIdRes {
+        do{
+            let response : ClassSectionByIdRes = try await APIClient.shared.request(APIEndpoint.classSectionById(id:id))
+            return response
+        }catch let error{
+            throw error
+        }
+    }
+    
+    func getSectionById(id: Int) async throws -> SectionById {
+        do{
+            let response : SectionById = try await APIClient.shared.request(APIEndpoint.sectionById(id: id))
+            return response
+        }catch let error{
+            throw error
+        }
+    }
+    
+    func getUpdateSection(id: Int, req: UpdateSectionReq) async throws -> UpdateSectionRes {
+        do{
+            let response:UpdateSectionRes = try await APIClient.shared.request(APIEndpoint.updateSection(id: id), body: req)
+            return response
+        }catch let error{
+            throw error
+        }
+    }
+    
+    func getDeleteSec(id: Int) async throws -> DeleteSecRes {
+        do{
+            let response : DeleteSecRes = try await APIClient.shared.request(APIEndpoint.deleteSection(id: id))
+            return response
+            
+        }catch let error{
+            throw error
+        }
+    }
 }

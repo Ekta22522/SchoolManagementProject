@@ -59,6 +59,17 @@ struct ClassByIdView: View {
                 .cornerRadius(10)
             }
             
+            Button(action:{
+                router.goToListSection()
+            },label:{
+                Text("All Section")
+                    .foregroundStyle(.white)
+                    .padding()
+            })
+            .frame(maxWidth:120, maxHeight: 50)
+            .background(Color.primary)
+            .cornerRadius(10)
+            
         }
         .task {
             await viewModel.getClassesById(id: classId)

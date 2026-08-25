@@ -21,6 +21,10 @@ enum APIEndpoint {
     case deleteClass(id:String)
     case createSection(id:String)
     case allSection
+    case classSectionById(id:String)
+    case sectionById(id:Int)
+    case updateSection(id:Int)
+    case deleteSection (id: Int)
     case profile
     case students
     case teachers
@@ -71,6 +75,19 @@ extension APIEndpoint{
          
         case.allSection:
             return "api/sections"
+        
+        case.classSectionById(let id):
+            return "api/sections/\(id)"
+            
+        case.sectionById(let id):
+            return "api/sections/\(id)"
+            
+        case.updateSection(let id):
+            return "api/sections/\(id)"
+            
+        case.deleteSection(let id):
+            return "api/sections/\(id)"
+            
         case.students:
             return ""
             
@@ -116,13 +133,17 @@ extension APIEndpoint{
             .teacher,
             .allClasses,
             .classByID,
-            .allSection:
+            .allSection,
+            .classSectionById,
+            .sectionById:
             return .GET
             
-        case.updateClass:
+        case.updateClass,
+            .updateSection:
             return.PUT
             
-        case.deleteClass:
+        case.deleteClass,
+            .deleteSection:
             return.DELETE
             
         

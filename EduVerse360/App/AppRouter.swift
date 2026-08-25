@@ -25,8 +25,13 @@ enum Router : Hashable{
     case allClasses
     case updateClass(id:String)
     case classById(id:String)
-    case createSection(id:String)
     case deleteClass(id:String)
+    case createSection(id:String)
+    case listSection
+    case classSectionById(id:String)
+    case sectionById(id:Int)
+    case updateSection(id:Int)
+    case deleteSection(id:Int)
     
 //    case settings
 }
@@ -110,6 +115,25 @@ class NavigationRouter{
     
     func goToCreateSection(id:String){
         path.append(Router.createSection (id: id))
+    }
+    
+    func goToListSection(){
+        path.append(Router.listSection)
+    }
+    func goToClassSectionById(id:String){
+        path.append(Router.classSectionById(id: id))
+    }
+    
+    func goToSectionById(id:Int){
+        path.append(Router.sectionById(id: id))
+    }
+    
+    func goToUpdateSection(id:Int){
+        path.append(Router.updateSection(id: id))
+    }
+    
+    func goToDeleteSection (id:Int){
+        path.append(Router.deleteSection(id: id))
     }
 }
 

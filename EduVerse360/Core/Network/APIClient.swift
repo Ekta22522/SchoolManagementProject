@@ -20,41 +20,70 @@ enum NetworkError: Error {
 
 final class APIClient{
     
-     static let shared = APIClient()
+    static let shared = APIClient()
     
     private init (){}
     
-    func request<T : Decodable>(
+    func request<T: Decodable>(
         _ endPoint: APIEndpoint,
-        body:Encodable? = nil
-    )async throws -> T {
-        var request  = RequestBuilder.build(for: endPoint)
+        body: Encodable? = nil
+    ) async throws -> T {
         
-        if let body {
+        do {
+            var request = RequestBuilder.build(for: endPoint)
             
-            let encoder =  JSONEncoder()
+            print("🌐 URL:", request.url?.absoluteString ?? "NO URL")
+            print("📤 METHOD:", request.httpMethod ?? "NO METHOD")
             
-            let requestBody = try encoder.encode(body)
-//            debugPrint("requestBody: \(requestBody)")
-            request.httpBody = requestBody
+            if let body {
+                let encoder = JSONEncoder()
+                let requestBody = try encoder.encode(body)
+                
+                request.httpBody = requestBody
+                
+                print("📦 REQUEST BODY:",
+                      String(data: requestBody, encoding: .utf8) ?? "Could not print body")
+            }
+            
+            let (data, response) = try await URLSession.shared.data(for: request)
+            
+            print("📥 RAW RESPONSE:",
+                  String(data: data, encoding: .utf8) ?? "Could not read response")
+            
+            guard let response = response as? HTTPURLResponse else {
+                print("❌ Invalid HTTP response")
+                throw NetworkError.invalidResponse
+            }
+            
+            print("📡 STATUS CODE:", response.statusCode)
+            
+            guard 200...299 ~= response.statusCode else {
+                print("❌ SERVER ERROR:", response.statusCode)
+                
+                throw NetworkError.serverError(response.statusCode)
+            }
+            
+            do {
+                let decoder = JSONDecoder()
+                
+                let decodedData = try decoder.decode(T.self, from: data)
+                
+                print("✅ DECODING SUCCESS")
+                
+                return decodedData
+                
+            } catch {
+                print("❌ DECODING ERROR:", error)
+                print("❌ DECODING ERROR DESCRIPTION:", error.localizedDescription)
+                
+                throw NetworkError.decodingFailed
+            }
+            
+        } catch {
+            print("🔥 API ERROR:", error)
+            print("🔥 API ERROR DESCRIPTION:", error.localizedDescription)
+            
+            throw error
         }
-        
-        let (data, response) = try await URLSession.shared.data(for:request)
-        
-//        debugPrint("response: \(response)")
-//        debugPrint("data: \(data)")
-        
-        guard let response = response as? HTTPURLResponse else{
-            throw NetworkError.invalidResponse
-        }
-        
-        guard 200...299 ~= response.statusCode else{
-            throw NetworkError.serverError(response.statusCode)
-        }
-        
-        let decoder = JSONDecoder()
-        
-        
-        return try decoder.decode(T.self,from: data)
     }
 }

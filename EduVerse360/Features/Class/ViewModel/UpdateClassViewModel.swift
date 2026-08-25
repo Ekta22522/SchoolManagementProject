@@ -9,11 +9,12 @@ import Foundation
 import Observation
 
 @Observable
-class UpdateViewModel{
+class UpdateClassViewModel{
     var className = ""
     var description = ""
     var classNameError : String?
     var descriptionError : String?
+    var section : Section?
     var errorMessage : String?
     var isLoading = false
     var classroom : Class?

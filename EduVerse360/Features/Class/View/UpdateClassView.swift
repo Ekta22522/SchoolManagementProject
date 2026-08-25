@@ -11,7 +11,7 @@ struct UpdateClassView: View {
     
     let classId : String
     
-    @State var viewModel = UpdateViewModel()
+    @State var viewModel = UpdateClassViewModel()
     @FocusState private var focusedField : Field?
     
     @Environment(NavigationRouter.self) private var router
