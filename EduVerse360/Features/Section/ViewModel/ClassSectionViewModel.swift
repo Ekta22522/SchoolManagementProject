@@ -7,15 +7,16 @@
 import Foundation
 import Observation
 @Observable
-class ClassSectionByIdViewModel{
-    var classSections : [Section]?
+class ClassSectionViewModel{
+    var classRoom : Class?
+    var section : [Section]?
     var isLoading = true
     var errorMessage:String?
-    var isSectionByIdIsSuccess = false
+    var isClassSectionSuccess = false
     
-    private let sectionByIdService : SectionProtocol
-    init(sectionbyidservice : SectionProtocol = SectionServerAPI()){
-        self.sectionByIdService = sectionbyidservice
+    private let classSectionService : SectionProtocol
+    init(classsectionservice : SectionProtocol = SectionServerAPI()){
+        self.classSectionService  = classsectionservice
     }
     
     func classSection(id:String) async{
@@ -27,9 +28,10 @@ class ClassSectionByIdViewModel{
             print("Process is Finished")
         }
         do{
-            let response : ClassSectionByIdRes = try await self.sectionByIdService.getClassSectionById(id: id)
-            isSectionByIdIsSuccess = true
-            classSections = response.data
+            let response : ClassSectionRes = try await self.classSectionService.getClassSection(id: id)
+            isClassSectionSuccess = true
+            classRoom = response.classroom
+            section = response.section
             print("Class Section by ID fetched Successfully")
             
         }catch{

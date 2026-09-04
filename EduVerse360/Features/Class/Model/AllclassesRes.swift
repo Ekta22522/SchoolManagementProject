@@ -7,5 +7,12 @@
 
 struct AllclassesRes: Decodable{
     let success : Bool
+    let totalClasses :Int
     let data : [Class]
+    
+    enum CodingKeys : String,CodingKey{
+        case success
+        case totalClasses = "total_classes"
+        case data
+    }
 }

@@ -32,6 +32,7 @@ class AllClassesViewModel{
         do{
             let allclassesRes : AllclassesRes = try await self.allClassService.getAllClasses()
             classes = allclassesRes.data
+     
             isFetchingAllClasses = true
             print("All Classes are fetched Successfully",isFetchingAllClasses)
             

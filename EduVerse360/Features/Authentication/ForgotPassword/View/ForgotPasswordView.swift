@@ -32,18 +32,19 @@ struct ForgotPasswordView: View {
                     
                 )
             
-            VStack(spacing:10){
+            VStack{
                 Text("Forgot Password?")
                     .font(.largeTitle)
                     .fontWeight(.bold)
-                Text("Enter your email address and we'll send you a password reset link.")
+                Text("Enter your email address and we'll send you an OTP to verify your identity.")
+                    .frame(maxWidth: .infinity)
                     .multilineTextAlignment(.center)
                     .foregroundColor(Color.secondaryText)
+                    .padding(.horizontal, 20)
+                    .padding(.bottom)
                 
-            }
-            .padding()
-            
-            VStack(){
+                
+                
                 AppTextField(title: "EMAIL ADDRESS",
                              imageName: "email",
                              placeholder: "Enter your Email",
@@ -89,6 +90,7 @@ struct ForgotPasswordView: View {
             Spacer()
                 .padding()
         }
+     
     }
 }
 

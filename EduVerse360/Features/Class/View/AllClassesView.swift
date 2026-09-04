@@ -41,6 +41,18 @@ struct AllClassesView: View {
     var body: some View {
         VStack(alignment:.trailing){
             HStack(spacing:50){
+                Button(action:{
+                    router.goToAllOnlineClass()
+                },label:{
+                    Text("Online Class")
+                        .foregroundStyle(Color.white)
+                })
+                
+                .frame(maxWidth: 100, maxHeight: 50)
+                .background(Color.primary)
+                .cornerRadius(20)
+                .padding()
+                
                 Text("All Classes")
                     .font(.headline)
                 Button(action:{

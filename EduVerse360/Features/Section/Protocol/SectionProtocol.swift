@@ -10,7 +10,7 @@ protocol SectionProtocol{
     
     func createSection(req:SectionReq,id:String) async throws -> SectionRes
     func listSection()async throws -> ListSectionRes
-    func getClassSectionById(id:String) async throws -> ClassSectionByIdRes
+    func getClassSection(id:String) async throws -> ClassSectionRes
     func getSectionById(id:Int) async throws -> SectionById
     func getUpdateSection(id:Int,req:UpdateSectionReq) async throws ->UpdateSectionRes
     func getDeleteSec(id:Int) async throws -> DeleteSecRes

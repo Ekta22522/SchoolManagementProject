@@ -27,9 +27,9 @@ class SectionServerAPI : SectionProtocol{
         }
     }
     
-    func getClassSectionById(id:String) async throws -> ClassSectionByIdRes {
+    func getClassSection(id:String) async throws -> ClassSectionRes {
         do{
-            let response : ClassSectionByIdRes = try await APIClient.shared.request(APIEndpoint.classSectionById(id:id))
+            let response : ClassSectionRes = try await APIClient.shared.request(APIEndpoint.classSection(id:id))
             return response
         }catch let error{
             throw error

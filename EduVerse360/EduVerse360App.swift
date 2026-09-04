@@ -20,22 +20,16 @@ struct EduVerse360App: App {
                 StartView()
                     .navigationDestination(for: Router.self) { route in
                         switch route {
-                        case .mainTab:
-                            MainTabView()
                         case .allClasses:
                             AllClassesView()
                         case .profile:
                             ProfileView()
-                        case .login:
-                            LoginView()
-                        case .register:
-                            RegisterSessionView()
+                      
                         case .verifyRegisterationOTP(let email):
                             VerifyRegistrationView(email: email)
                         case .forgotPassword:
                             ForgotPasswordView()
-                        case .verifyOtp(let email):
-                            VerifyOtpView(email: email)
+    
                         case .resetPassword(let email):
                             ResetPasswordView(email: email)
 
@@ -56,8 +50,8 @@ struct EduVerse360App: App {
                             SectionView(classId: classID)
                         case.listSection:
                             ListSectionView()
-                        case.classSectionById(let classID):
-                            ClassSectionByIdView(classId:classID)
+                        case.classSection(let classID):
+                            ClassSectionView(classId:classID)
                         case.sectionById(let sectionID):
                             SectionByIdView(sectionId: sectionID)
                         case.updateSection(let sectionID):
@@ -65,6 +59,16 @@ struct EduVerse360App: App {
                             
                         case.deleteSection(let sectionID):
                             DeleteSectionView(sectionId: sectionID)
+                        case.onlineClass:
+                           CreateOnlineClassView()
+                        case.allOnlineClass:
+                            ListOnlineClassView()
+                        case.onlineClassById(let onlineClassID):
+                            OnlineClassByIdView(onlineClassId: onlineClassID)
+                        case.updateOnlineClass(let onlineClassID):
+                            UpdateOnlineClassView(onlineClassId: onlineClassID)
+                        case.deleteOnlineClass(let onlineClassID):
+                            DeleteOnlineClassView( onlineClassId: onlineClassID)
                         }
                     }
             }
@@ -75,16 +79,35 @@ struct EduVerse360App: App {
     }
 }
 
+
 struct StartView: View {
 
     @Environment(UserSession.self) private var session
 
-    var body: some View {
-        if session.isLoggedIn {
-            MainTabView()
-        } else {
-            LoginView()
-        }
+    @Environment(NavigationRouter.self) private var router
 
+    var body: some View {
+
+        if session.isLoggedIn {
+
+            MainTabView()
+
+        } else {
+
+            switch router.authScreen {
+
+            case .login:
+                LoginView()
+                
+            case.mainTab:
+                MainTabView()
+                
+            case .register:
+                RegisterSessionView()
+            case .verifyOtp(let email):
+                VerifyOtpView(email: email)
+                
+            }
+        }
     }
 }

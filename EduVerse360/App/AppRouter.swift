@@ -9,17 +9,23 @@ import Foundation
 import SwiftUI
 import Observation
 
-enum Router : Hashable{
+enum AuthScreen {
+    case mainTab
     case login
     case register
+    case verifyOtp(email:String)
+}
+
+
+enum Router : Hashable{
+
 //    case dashboard
     case profile
-    case mainTab
     case forgotPassword
     case studentDetails(id: Int)
     case teacherDetails(id:Int)
     case verifyRegisterationOTP(email:String)
-    case verifyOtp(email:String)
+    
     case resetPassword(email:String)
     case classes
     case allClasses
@@ -28,16 +34,22 @@ enum Router : Hashable{
     case deleteClass(id:String)
     case createSection(id:String)
     case listSection
-    case classSectionById(id:String)
+    case classSection(id:String)
     case sectionById(id:Int)
     case updateSection(id:Int)
     case deleteSection(id:Int)
+    case onlineClass
+    case allOnlineClass
+    case onlineClassById(id:Int)
+    case updateOnlineClass(id:Int)
+    case deleteOnlineClass(id:Int)
     
 //    case settings
 }
 
 @Observable
 class NavigationRouter{
+    var authScreen: AuthScreen = .login
     var path = NavigationPath()
     
 //    func gotoDashboard(){
@@ -50,7 +62,8 @@ class NavigationRouter{
     }
     
     func goToMainTab(){
-        path.append(Router.mainTab)
+       authScreen = .mainTab
+       path = NavigationPath()
         
         
     }
@@ -59,16 +72,14 @@ class NavigationRouter{
         path.append(Router.profile)
     }
     
-    func goToLogin(){
+    func goToLogin() {
+        authScreen = .login
         path = NavigationPath()
-        path.append(Router.login)
-        
     }
-    
-    
-    func goToRegister(){
-        path.append(Router.register)
-        
+
+    func goToRegister() {
+        authScreen = .register
+        path = NavigationPath()
     }
     
     func goToVerifyRegisterationOTP(email: String){
@@ -76,7 +87,8 @@ class NavigationRouter{
     }
 
     func goToVerifyOtp (email:String){
-        path.append(Router.verifyOtp(email: email))
+        authScreen = .verifyOtp(email: email)
+        path = NavigationPath()
     }
     func goToForgotPassword(){
         path.append(Router.forgotPassword)
@@ -120,8 +132,8 @@ class NavigationRouter{
     func goToListSection(){
         path.append(Router.listSection)
     }
-    func goToClassSectionById(id:String){
-        path.append(Router.classSectionById(id: id))
+    func goToClassSection(id:String){
+        path.append(Router.classSection(id: id))
     }
     
     func goToSectionById(id:Int){
@@ -134,6 +146,25 @@ class NavigationRouter{
     
     func goToDeleteSection (id:Int){
         path.append(Router.deleteSection(id: id))
+    }
+    
+    func goToOnlinceClass(){
+        path.append(Router.onlineClass)
+    }
+    func goToAllOnlineClass(){
+        path.append(Router.allOnlineClass)
+    }
+    
+    func goToOnlineClassById(id:Int){
+        path.append(Router.onlineClassById(id: id))
+    }
+    
+    func goToUpdateOnlineClass(id:Int){
+        path.append(Router.updateOnlineClass(id: id))
+    }
+    
+    func goToDeleteOnlineClass(id:Int){
+        path.append(Router.deleteOnlineClass(id: id))
     }
 }
 

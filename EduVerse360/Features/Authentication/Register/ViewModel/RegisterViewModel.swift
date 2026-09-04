@@ -12,23 +12,20 @@ import Foundation
 class RegisterViewModel{
     var email = ""
     var password = ""
-    var fullName = ""
-    var phoneNumber = ""
-    var schoolName = ""
     var role: UserRole = UserRole.user
-    var currentStep = 1
     var rememberMe = false
     var isLoading = false
     var token = ""
     var username = ""
     var adminSecret = "admin-secret-2026"
-    var errorMessage: String?
+    var registerError: String?
+    var usernameError:String?
+    var fieldError:String?
     var emailError:String?
-    var allFieldsError: String?
-    var generalError:String?
+    var passwordError:String?
     var alertMessage: String?
     var showAlert = false
-    
+
     var isRegisterSucceess = false
     
     private let registerService : RegisterProtocol
@@ -37,78 +34,111 @@ class RegisterViewModel{
     }
 
     
-    func checkAllFields(){
-        if fullName.isEmpty && email.isEmpty && phoneNumber.isEmpty && schoolName.isEmpty  {
-            alertMessage = "Fields are required."
-            return
+    func checkAllFields() -> Bool{
+        emailError = nil
+        fieldError = nil
+        passwordError = nil
+        usernameError = nil
+        
+        if username.isEmpty && email.isEmpty && password.isEmpty {
+        fieldError = "Fields are required."
+            return false
         }else if email.isEmpty{
-            alertMessage = "Email is required"
-             showAlert = true
-             return
-             
-        }else if fullName.isEmpty{
-            alertMessage = "Full Name is required"
-             showAlert = true
-             return
+           emailError = "Email is required"
+            return false
+        }else if username.isEmpty{
+            usernameError = "Full Name is required"
             
-        }else if phoneNumber.isEmpty{
-            alertMessage = "Phone Number is required"
-             showAlert = true
-             return
+            return false
             
-        }else if schoolName.isEmpty{
-            alertMessage = "School Name is required"
-            showAlert = true
-            return
-            
-        }
-                    
-        else if  password.isEmpty{
-             alertMessage = "Password is required."
-                         showAlert = true
-                         return
+        }else if  password.isEmpty{
+             passwordError = "Password is required."
+            return false
             
          }else if password.count < 8 {
-             alertMessage = "Password must be 8 charcaters."
-                         showAlert = true
-                         return
+            passwordError = "Password must be 8 charcaters."
+             return false
          }else{
-            alertMessage = nil
+             return true
          }
     
     }
     
-    func createUser() async {
+  func createUser() async {
         isLoading = true
-        errorMessage = nil
-        allFieldsError = nil
-        
-        defer{
-            isLoading = false
-        }
-        do{
-            let registerRequest = RegisterRequest(username: username, email:email, password: password, role: role.rawValue, adminSecret: adminSecret)
-            let registerResponse = try await self.registerService.register(req: registerRequest)
-            isRegisterSucceess = true
-            print("Register Success:", isRegisterSucceess)
-                    alertMessage = "User created successfully."
-                    showAlert = true
-            print("otp",registerResponse.otp)
-        }catch  let error{
-            self.errorMessage = error.localizedDescription
 
+        emailError = nil
+        usernameError = nil
+        fieldError = nil
+        passwordError = nil
+        registerError = nil
+
+        defer {
+           isLoading = false
+        }
+
+        do {
+            let registerRequest = RegisterRequest(
+                username: username,
+                email: email,
+                password: password,
+                role: role.rawValue,
+                adminSecret: adminSecret
+            )
+
+            let registerResponse = try await registerService.register(
+                req: registerRequest
+            )
+
+            // 201 = SUCCESS
+            isRegisterSucceess = true
+
+            print("Register Success:", isRegisterSucceess)
+            alertMessage = "User created successfully."
+                               showAlert = true
+            print("OTP:", registerResponse.otp)
+
+        } catch let error as NetworkError {
+
+            switch error {
+
+            case .serverError(let statusCode):
+
+                print("Server status code:", statusCode)
+
+                if statusCode == 400 {
+                    registerError = "Username, email, and password are required"
+
+                }else if statusCode == 422 {
+                    registerError = "Invalid role specified."
+                }
+                else if statusCode == 409 {
+                    registerError = "Email already registered and verified."
+
+                } else if statusCode == 403 {
+                    registerError = "Only standard users can self-register without admin approval."
+
+                } else if statusCode == 500 {
+                    registerError = "Registration failed."
+
+                } else {
+                    registerError = "Something went wrong. Please try again."
+                }
+
+            case .noInternet:
+                registerError = "No internet connection."
+
+            default:
+                registerError = "Something went wrong. Please try again."
+            }
+
+        } catch {
+            registerError = "Something went wrong. Please try again."
         }
     }
+    }
     
-    func nextStep() {
-            guard currentStep < 3 else { return }
-            currentStep += 1
-        }
-
-        func previousStep() {
-            guard currentStep > 1 else { return }
-            currentStep -= 1
-        }
+  
 
     
-}
+

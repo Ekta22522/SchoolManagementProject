@@ -58,17 +58,28 @@ struct ClassByIdView: View {
                 .background(Color.primary)
                 .cornerRadius(10)
             }
-            
-            Button(action:{
-                router.goToListSection()
-            },label:{
-                Text("All Section")
-                    .foregroundStyle(.white)
-                    .padding()
-            })
-            .frame(maxWidth:120, maxHeight: 50)
-            .background(Color.primary)
-            .cornerRadius(10)
+            VStack(spacing:10){
+                Button(action:{
+                    router.goToListSection()
+                },label:{
+                    Text("All Section")
+                        .foregroundStyle(.white)
+                        .padding()
+                })
+                .frame(maxWidth:120, maxHeight: 50)
+                .background(Color.primary)
+                .cornerRadius(10)
+                
+                Button(action:{
+                    router.goToClassSection(id: classId)
+                },label:{
+                    Text("class all Section")
+                        .foregroundStyle(.white)
+                })
+                .frame(maxWidth:100, maxHeight: 50)
+                .background(Color.primary)
+                .cornerRadius(10)
+            }
             
         }
         .task {

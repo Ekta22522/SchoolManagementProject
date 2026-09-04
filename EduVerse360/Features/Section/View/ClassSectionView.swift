@@ -7,23 +7,32 @@
 
 import SwiftUI
 
-struct ClassSectionByIdView: View {
+struct ClassSectionView: View {
     let classId : String
-    @State var viewModel = ClassSectionByIdViewModel()
+   
+    @State var viewModel = ClassSectionViewModel()
     var body: some View {
         VStack(spacing:10){
-            if let sections = viewModel.classSections{
+            VStack{
+                if let classRoom = viewModel.classRoom{
+                    VStack{
+                        Text(" Class id:\(classRoom.id)")
+                        Text("Class Name:\(classRoom.className)")
+                        Text("Description:\(classRoom.description)")
+                        Text("Created At:\(classRoom.createdAt)")
+                        Text("Updated At:\(classRoom.updatedAt)")
+                    }
+                }
+            }
+            if let sections = viewModel.section{
                 List(sections){section in
                     VStack{
                         Text("Id:\(section.id)")
-                        Text("Class:\(section.classId)")
+                        Text("Class Id:\(section.classId)")
                         Text("Section Name:\(section.sectionName)")
                         Text("Class Teacher:\(section.classTeacher)")
                         Text("Capacity:\(section.capacity)")
                         Text("created At:\(section.createdAt)")
-                        if let updatedAt = section.updatedAt{
-                            Text("Updated At:\(updatedAt)")
-                        }
                         if let className = section.className{
                             Text("Class Name:\(className)")
                         }
@@ -39,5 +48,5 @@ struct ClassSectionByIdView: View {
 }
 
 #Preview {
-    ClassSectionByIdView(classId: "")
+    ClassSectionView(classId: "")
 }

@@ -15,6 +15,7 @@ enum NetworkError: Error {
     case unauthorized
     case noInternet
     case unknown(Error)
+ 
 
 }
 
@@ -56,6 +57,8 @@ final class APIClient{
             }
             
             print("📡 STATUS CODE:", response.statusCode)
+            
+            
             
             guard 200...299 ~= response.statusCode else {
                 print("❌ SERVER ERROR:", response.statusCode)

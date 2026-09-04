@@ -16,6 +16,9 @@ enum Field: Hashable{
     case sectionName
     case classTeacher
     case capacity
+    case otp
+    case meetingUrl
+    case title
 }
 
 
@@ -30,15 +33,12 @@ struct LoginView: View {
     
     var body: some View {
         
-        ZStack{
+
             
             
             ScrollView{
-                ZStack{
-                    RoundedRectangle(cornerRadius: 10)
-                        .fill(.white)
-                        .frame(maxWidth:.infinity, maxHeight: .infinity)
-                    //                    .shadow(radius: 10)
+        
+        
                     
                     VStack{
                         
@@ -83,8 +83,7 @@ struct LoginView: View {
                                          text: $viewModel.email,
                                          focusedField: $focusedField)
                             
-                            
-                            
+                           
                             // Password
                             
                             AppTextField(title:"Password",
@@ -129,40 +128,34 @@ struct LoginView: View {
                         }
                         .frame(width:300)
                         .padding()
-                        .alert(
-                            "Error",
-                            isPresented: Binding(
-                                get: { viewModel.showAlert },
-                                set: { viewModel.showAlert = $0 }
-                            )
-                        ) {
-                            Button("OK", role: .cancel) { }
-                        } message: {
-                            Text(viewModel.alertMessage ?? "Error 1")
-                        }
+                        
                         //Login Button
                         Button( action: {
+                           
+                            
                             viewModel.checkAllFields()
-                            //                        viewModel.validateEmail()
-                            //                        viewModel.validatePassword()
-                            Task{
+                            
+                            // Stop here if validation failed
+                            if viewModel.emailError != nil || viewModel.passwordError != nil {
+                                return
+                            }
+
+                            Task {
                                 await viewModel.loginUser()
+
                                 if viewModel.isLoginSucceess {
                                     viewModel.updateUsername(sess: session)
                                     viewModel.saveToken(sess: session)
                                     session.isLoggedIn = true
-                                    
                                     session.updateUserModel(model: viewModel.userModel)
                                     router.goToMainTab()
-//                                    print("Logged In:", session.isLoggedIn)
+                                }
+
                                 }
                                 
                                 
                             }
-                            
-                            
-                        }
-                                , label: {
+                            , label: {
                             Text("Login")
                                 .font(.headline)
                                 .fontWeight(.bold)
@@ -175,6 +168,13 @@ struct LoginView: View {
                             
                         }
                         )
+                        
+                        if let error = viewModel.loginError {
+                            Text(error)
+                                .font(.caption)
+                                .foregroundColor(.red)
+                        }
+                        
                         
                         // Divider
                         VStack{
@@ -229,28 +229,12 @@ struct LoginView: View {
                     }
                     
                     
+            
                     
                     
                     
                     
-                    
-                    
-                    if let error = viewModel.generalError {
-                        Text(error)
-                            .foregroundColor(.red)
-                    }
-                    
-                    if let error = viewModel.allFieldsError {
-                        Text(error)
-                            .foregroundColor(.red)
-                    }
-                    
-                    if let error = viewModel.userNotFound{
-                        Text(error)
-                        .foregroundColor(.red)}
-                    
-                    
-                }
+                
                 
             }
             .disabled(viewModel.isLoading)
@@ -268,7 +252,6 @@ struct LoginView: View {
             }
             
             
-        }
     }
 }
 #Preview {

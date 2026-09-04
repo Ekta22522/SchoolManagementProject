@@ -21,10 +21,15 @@ enum APIEndpoint {
     case deleteClass(id:String)
     case createSection(id:String)
     case allSection
-    case classSectionById(id:String)
+    case classSection(id:String)
     case sectionById(id:Int)
     case updateSection(id:Int)
     case deleteSection (id: Int)
+    case createOnlineClass
+    case readAllOnlineClass
+    case onlineClassById(id:Int)
+    case updateOnlineClass(id:Int)
+    case deleteOnlineClass(id:Int)
     case profile
     case students
     case teachers
@@ -76,8 +81,8 @@ extension APIEndpoint{
         case.allSection:
             return "api/sections"
         
-        case.classSectionById(let id):
-            return "api/sections/\(id)"
+        case.classSection(let id):
+            return "api/classes/\(id)/sections"
             
         case.sectionById(let id):
             return "api/sections/\(id)"
@@ -87,10 +92,22 @@ extension APIEndpoint{
             
         case.deleteSection(let id):
             return "api/sections/\(id)"
+         
             
+            //Online class
+            
+        case.createOnlineClass:
+            return "api/online-classes"
         case.students:
             return ""
-            
+        case.readAllOnlineClass:
+            return"api/online-classes"
+        case.onlineClassById(let id):
+            return "api/online-classes/\(id)"
+        case.updateOnlineClass(let id):
+            return "api/online-classes/\(id)"
+        case.deleteOnlineClass(let id):
+            return "api/online-classes/\(id)"
         case.teachers:
             return ""
         case.profile:
@@ -122,7 +139,8 @@ extension APIEndpoint{
             .verifyOtp,
             .classes,
             .resetPassword,
-            .createSection:
+            .createSection,
+            .createOnlineClass:
             return .POST
             
         case.students,
@@ -134,16 +152,20 @@ extension APIEndpoint{
             .allClasses,
             .classByID,
             .allSection,
-            .classSectionById,
-            .sectionById:
+            .classSection,
+            .sectionById,
+            .readAllOnlineClass,
+            .onlineClassById:
             return .GET
             
         case.updateClass,
-            .updateSection:
+            .updateSection,
+            .updateOnlineClass:
             return.PUT
             
         case.deleteClass,
-            .deleteSection:
+            .deleteSection,
+            .deleteOnlineClass:
             return.DELETE
             
         

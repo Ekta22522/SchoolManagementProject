@@ -20,7 +20,10 @@ struct Class: Decodable, Identifiable{
     let className: String
     let description: String
     let createdAt: String
-    let updatedAt: String
+    let updatedAt: String?
+    let sectionCount : Int?
+    let totalCapacity : Int?
+    let sections : [Section]?
 
     enum CodingKeys: String, CodingKey {
         case id
@@ -28,5 +31,8 @@ struct Class: Decodable, Identifiable{
         case description
         case createdAt = "created_at"
         case updatedAt = "updated_at"
+        case sectionCount = "section_count"
+        case totalCapacity = "total_capacity"
+        case sections
     }
 }
