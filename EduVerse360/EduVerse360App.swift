@@ -89,9 +89,8 @@ struct StartView: View {
     var body: some View {
 
         if session.isLoggedIn {
-
-            MainTabView()
-
+            
+            MainTabView(role:.teacher)
         } else {
 
             switch router.authScreen {
@@ -100,7 +99,7 @@ struct StartView: View {
                 LoginView()
                 
             case.mainTab:
-                MainTabView()
+                MainTabView(role:.teacher)
                 
             case .register:
                 RegisterSessionView()

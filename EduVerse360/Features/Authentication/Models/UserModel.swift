@@ -9,7 +9,6 @@ import Foundation
 
 enum UserRole: String{
     case superAdmin = "superAdmin"
-    case user = "user"
     case student = "student"
     case teacher = "teacher"
     case schoolAdmin = "school_admin"

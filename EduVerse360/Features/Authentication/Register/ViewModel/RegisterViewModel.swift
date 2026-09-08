@@ -12,7 +12,7 @@ import Foundation
 class RegisterViewModel{
     var email = ""
     var password = ""
-    var role: UserRole = UserRole.user
+    var role: UserRole = UserRole.student
     var rememberMe = false
     var isLoading = false
     var token = ""

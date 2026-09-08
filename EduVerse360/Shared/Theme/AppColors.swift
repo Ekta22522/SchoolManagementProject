@@ -8,6 +8,12 @@
 import SwiftUI
 
 extension Color{
+    static let pageBackground = Color(hex: "eceef2")
+    static let tertiaryText = Color(hex:"737688")
+    static let tealTint = Color(hex :"E9F2F5")
+    static let teal = Color(hex:"005C7B")
+    static let inputFields = Color(hex:"f2f3f7")
+    static let divider = Color(hex : "dcdee5")
     static let primary = Color(hex: "0047D3")
     static let homesecondarytext = Color(hex: "B6C4FF")
     static let secondaryText = Color(hex:"434656")

@@ -14,6 +14,7 @@ class UserSession {
     var username:String?
     var user: UserModel?
     var token: String? = UserDefaultsManager.shared.read(key: .token)
+    var role : UserRole?
     var isLoggedIn = false
 
     init() {

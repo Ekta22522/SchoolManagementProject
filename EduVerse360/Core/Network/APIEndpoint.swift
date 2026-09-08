@@ -30,6 +30,8 @@ enum APIEndpoint {
     case onlineClassById(id:Int)
     case updateOnlineClass(id:Int)
     case deleteOnlineClass(id:Int)
+    case createTeacherAssignment
+    case allTeacherAssignment
     case profile
     case students
     case teachers
@@ -94,7 +96,7 @@ extension APIEndpoint{
             return "api/sections/\(id)"
          
             
-            //Online class
+         // MARK  Online class
             
         case.createOnlineClass:
             return "api/online-classes"
@@ -108,6 +110,12 @@ extension APIEndpoint{
             return "api/online-classes/\(id)"
         case.deleteOnlineClass(let id):
             return "api/online-classes/\(id)"
+            
+         //MARK Assignment
+        case.createTeacherAssignment:
+            return"api/assignments"
+        case.allTeacherAssignment:
+            return"api/assignments"
         case.teachers:
             return ""
         case.profile:
@@ -169,8 +177,12 @@ extension APIEndpoint{
             return.DELETE
             
         
-        case.uploadProfileImage:
+        case.uploadProfileImage,
+            .createTeacherAssignment:
             return .POST
+            
+        case.allTeacherAssignment:
+            return.GET
         }
     }
 }

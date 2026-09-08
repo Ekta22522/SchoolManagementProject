@@ -41,19 +41,17 @@ final class MultipartFormData{
         fileName: String,
         mimeType: String
     ) {
-
         body.append("--\(boundary)\r\n")
 
         body.append(
-            """
-            Content-Disposition: form-data; name="\(name)"; filename="\(fileName)"
-            Content-Type: \(mimeType)
+            "Content-Disposition: form-data; name=\"\(name)\"; filename=\"\(fileName)\"\r\n"
+        )
 
-            """
+        body.append(
+            "Content-Type: \(mimeType)\r\n\r\n"
         )
 
         body.append(data)
-
         body.append("\r\n")
     }
     

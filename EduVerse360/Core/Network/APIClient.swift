@@ -89,4 +89,81 @@ final class APIClient{
             throw error
         }
     }
+    
+    func multipartRequest<T: Decodable>(
+        _ endPoint: APIEndpoint,
+        multipart: MultipartFormData
+    ) async throws -> T {
+
+        do {
+            var request = RequestBuilder.build(for: endPoint)
+
+            print("🌐 URL:", request.url?.absoluteString ?? "NO URL")
+            print("📤 METHOD:", request.httpMethod ?? "NO METHOD")
+
+            // Finish the multipart body
+            multipart.finalize()
+
+            // Set multipart content type
+            request.setValue(
+                "multipart/form-data; boundary=\(multipart.boundary)",
+                forHTTPHeaderField: "Content-Type"
+            )
+
+            // Add multipart body
+            request.httpBody = multipart.body
+
+            print("📦 MULTIPART BODY SIZE:", multipart.body.count, "bytes")
+
+            let (data, response) = try await URLSession.shared.data(for: request)
+
+            print(
+                "📥 RAW RESPONSE:",
+                String(data: data, encoding: .utf8) ?? "Could not read response"
+            )
+
+            guard let response = response as? HTTPURLResponse else {
+                print("❌ Invalid HTTP response")
+                throw NetworkError.invalidResponse
+            }
+
+            print("📡 STATUS CODE:", response.statusCode)
+
+            guard 200...299 ~= response.statusCode else {
+                print("❌ SERVER ERROR:", response.statusCode)
+                throw NetworkError.serverError(response.statusCode)
+            }
+
+            do {
+                let decoder = JSONDecoder()
+
+                let decodedData = try decoder.decode(
+                    T.self,
+                    from: data
+                )
+
+                print("✅ MULTIPART DECODING SUCCESS")
+
+                return decodedData
+
+            } catch {
+                print("❌ DECODING ERROR:", error)
+                print(
+                    "❌ DECODING ERROR DESCRIPTION:",
+                    error.localizedDescription
+                )
+
+                throw NetworkError.decodingFailed
+            }
+
+        } catch {
+            print("🔥 MULTIPART API ERROR:", error)
+            print(
+                "🔥 MULTIPART API ERROR DESCRIPTION:",
+                error.localizedDescription
+            )
+
+            throw error
+        }
+    }
 }
