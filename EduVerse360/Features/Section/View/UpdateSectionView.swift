@@ -10,7 +10,7 @@ import SwiftUI
 struct UpdateSectionView: View {
     var sectionId : Int
     @State var viewModel = UpdateSectionViewModel()
-    @Environment(NavigationRouter.self)private  var router
+    @Environment(TabRouter.self) private var router
     @FocusState private var focusedField : Field?
     var body: some View {
         VStack{
