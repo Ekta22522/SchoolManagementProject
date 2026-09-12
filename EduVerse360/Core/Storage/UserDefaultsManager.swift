@@ -19,6 +19,8 @@ struct UserDefaultsManager{
         case firstName = "first_name"
         case lastName = "last_name"
         case rememberMe = "remember_me"
+        case user = "user"
+        case role = "role"
     }
     
     // Save Function
@@ -34,6 +36,10 @@ struct UserDefaultsManager{
         standard.set(data, forKey: key.rawValue)
     }
     
+    func save(data: Data, key:UserDefaultKeys){
+        standard.set(data, forKey: key.rawValue)
+    }
+    
     // Read Function
     func read(key:UserDefaultKeys) -> String?{
         return standard.string(forKey: key.rawValue)
@@ -45,6 +51,10 @@ struct UserDefaultsManager{
 
     func read(key:UserDefaultKeys) -> Bool{
         return standard.bool(forKey: key.rawValue)
+    }
+    
+    func readData(key:UserDefaultKeys) -> Data?{
+        standard.data(forKey: key.rawValue)
     }
     
     
