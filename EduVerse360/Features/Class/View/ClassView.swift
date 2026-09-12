@@ -9,7 +9,7 @@ import SwiftUI
 
 
 struct ClassView: View {
-    @Environment(NavigationRouter.self) private var router
+    @Environment(TabRouter.self) private var router
     @FocusState private var focusedField : Field?
     @State var viewModel = ClassViewModel()
     var body: some View {
@@ -37,7 +37,7 @@ struct ClassView: View {
                     Task{
                         await viewModel.classes()
                         if viewModel.isclassSuccess{
-                            router.goToAllClasses()
+                            router.push(ClassRoute.list)
                         }
                     }
                 },label:{

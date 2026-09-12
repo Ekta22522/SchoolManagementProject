@@ -14,7 +14,7 @@ struct UpdateClassView: View {
     @State var viewModel = UpdateClassViewModel()
     @FocusState private var focusedField : Field?
     
-    @Environment(NavigationRouter.self) private var router
+    @Environment(TabRouter.self) private var router
     
     
     
