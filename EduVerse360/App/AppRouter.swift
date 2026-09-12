@@ -14,6 +14,7 @@ enum AuthScreen {
     case login
     case register
     case verifyOtp(email:String)
+    
 }
 
 
@@ -43,6 +44,9 @@ enum Router : Hashable{
     case onlineClassById(id:Int)
     case updateOnlineClass(id:Int)
     case deleteOnlineClass(id:Int)
+    case createTeacherAssignment
+    case teacherAssignmentById(id:Int)
+    
     
 //    case settings
 }
@@ -165,6 +169,13 @@ class NavigationRouter{
     
     func goToDeleteOnlineClass(id:Int){
         path.append(Router.deleteOnlineClass(id: id))
+    }
+    func goToCreateAssigniment(){
+        path.append(Router.createTeacherAssignment)
+    }
+    
+    func goToTeacherAssignmentById(id:Int){
+        path.append(Router.teacherAssignmentById(id: id))
     }
 }
 

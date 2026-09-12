@@ -8,11 +8,22 @@
 import SwiftUI
 
 struct TeacherAssignmentByIdView: View {
+    @State var viewModel = TeacherAssignmentByIdViewModel()
+    let assignmentId : Int
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        VStack{
+        
+            
+        }
+        .task {
+            await viewModel.TeacherAssignmentById(id: assignmentId)
+        }
+        
     }
 }
 
 #Preview {
-    TeacherAssignmentByIdView()
+    TeacherAssignmentByIdView(
+        assignmentId: 1
+    )
 }

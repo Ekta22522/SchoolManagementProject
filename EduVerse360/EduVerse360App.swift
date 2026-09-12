@@ -56,7 +56,6 @@ struct EduVerse360App: App {
                             SectionByIdView(sectionId: sectionID)
                         case.updateSection(let sectionID):
                             UpdateSectionView(sectionId: sectionID)
-                            
                         case.deleteSection(let sectionID):
                             DeleteSectionView(sectionId: sectionID)
                         case.onlineClass:
@@ -69,6 +68,10 @@ struct EduVerse360App: App {
                             UpdateOnlineClassView(onlineClassId: onlineClassID)
                         case.deleteOnlineClass(let onlineClassID):
                             DeleteOnlineClassView( onlineClassId: onlineClassID)
+                        case.createTeacherAssignment:
+                            CreateTeacherAssignmentView()
+                        case.teacherAssignmentById(let assignmentID):
+                            TeacherAssignmentByIdView(assignmentId: assignmentID)
                         }
                     }
             }
@@ -105,6 +108,7 @@ struct StartView: View {
                 RegisterSessionView()
             case .verifyOtp(let email):
                 VerifyOtpView(email: email)
+           
                 
             }
         }
