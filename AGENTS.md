@@ -17,7 +17,7 @@ Guidance for AI coding agents working in this repository. Everything below was v
 
 ```
 EduVerse360/
-├── EduVerse360App.swift   # @main entry point: NavigationStack + all .navigationDestination registrations
+├── EduVerse360App.swift   # @main entry point: StartView auth gate + AuthStackView + environment injection
 ├── ContentView.swift      # sample/starter view, not the real root
 ├── App/                   # app-wide plumbing
 │   ├── AuthRouter.swift   # @Observable AuthRouter (logged-out NavigationPath, push/pop/popToRoot)
@@ -36,7 +36,7 @@ EduVerse360/
 ├── Features/              # one folder per feature domain, MVVM
 │   ├── Authentication/    # Login, Register, ForgotPassword, ResetPassword,
 │   │                      # Models (UserModel, UserRole), Home/Settings/Dashboard, MainTabView
-│   ├── Class/             # create/list/detail/update/delete
+│   ├── Class/             # create/list/detail/update; delete is a confirmation dialog on the detail view
 │   ├── Section/
 │   ├── Online Class/      # note: folder name contains a space
 │   ├── Assignment/        # teacher assignments + custom cards + PDFScreen/PDFViewer
@@ -75,7 +75,7 @@ Navigation is split into a logged-out stack and per-tab stacks:
 
 **Adding a new screen requires**: (1) add a case to the relevant feature's route enum, and (2) register the destination for that case in `EduVerse360/App/FeatureDestinations.swift` — then push the case from the call site (`router.push(...)` or `authRouter.push(...)`). Only add a new route enum if the screen belongs to a new feature domain.
 
-`UserSession` restores login state from the persisted token at launch (`isLoggedIn = token != nil`) and `logout()` clears it; `activeRole` falls back to `.student` if no role is persisted.
+`UserSession` restores login state at launch from the persisted token, user (JSON), and role (`isLoggedIn = token != nil`); `logout()` removes all three persisted keys (`.token`/`.user`/`.role`) and nils the in-memory fields. `activeRole` falls back to `.student` if no role is persisted.
 
 ## Backend API surface
 

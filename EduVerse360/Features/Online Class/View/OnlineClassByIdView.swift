@@ -40,8 +40,19 @@ struct OnlineClassByIdView: View {
                         )
                         .padding(.horizontal, 25)
                         .padding(.top, 30)
-                        
-                        
+
+                        // MARK: - Delete Error
+
+                        if let error = deleteViewModel.errorMessage {
+
+                            Text(error)
+                                .font(.caption)
+                                .foregroundColor(.red)
+                                .padding(.top, 4)
+                                .padding(.horizontal, 25)
+                        }
+
+
                         // MARK: - Class Detail Card
                         
                         VStack(alignment: .leading, spacing: 18) {
