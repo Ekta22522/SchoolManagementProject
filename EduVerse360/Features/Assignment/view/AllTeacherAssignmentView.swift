@@ -2,7 +2,7 @@ import SwiftUI
 import UniformTypeIdentifiers
 
 struct AllTeacherAssignmentView: View {
-    @Environment(NavigationRouter.self) private var router
+    @Environment(TabRouter.self) private var router
     
     @State private var viewModel = AllTeacherAssignmentViewModel()
     
@@ -22,7 +22,7 @@ struct AllTeacherAssignmentView: View {
                     Spacer()
                     
                     Button(action:{
-                        router.goToCreateAssigniment()
+                        router.push(AssignmentRoute.create)
                     },label:{
                         Image(systemName: "plus")
                             .font(.title2)
@@ -96,7 +96,7 @@ struct AllTeacherAssignmentView: View {
                         print("View PDF: \(assignment.title)")
                     })
                     .onTapGesture {
-                        router.goToTeacherAssignmentById(id: assignment.id)
+                        router.push(AssignmentRoute.detail(id: assignment.id))
                     }
                             
                         }
