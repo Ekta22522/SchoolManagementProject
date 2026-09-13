@@ -9,7 +9,7 @@ import SwiftUI
 
 struct ProfileView: View {
 
-    @Environment(NavigationRouter.self) private var router
+    @Environment(TabRouter.self) private var tabRouter
     @Environment(UserSession.self) private var session
     @State var viewModel = ProfileViewModel(profileservice: ProfileServerAPI())
 
@@ -41,7 +41,7 @@ struct ProfileView: View {
             Button(
                 action: {
                     session.logout()
-                    router.goToLogin()
+                    tabRouter.reset()
 
                     print("logout successfully")
                 },
