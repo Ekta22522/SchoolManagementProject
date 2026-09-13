@@ -3,7 +3,7 @@ import SwiftUI
 
 struct ListOnlineClassView: View {
 
-    @Environment(NavigationRouter.self) private var router
+    @Environment(TabRouter.self) private var router
     @State private var viewModel = ListOnlineClassViewModel()
   
 
@@ -135,7 +135,7 @@ struct ListOnlineClassView: View {
 
                                     }
                                     .onTapGesture{
-                                        router.goToOnlineClassById(id: onlineClass.id)
+                                        router.push(OnlineClassRoute.detail(id: onlineClass.id))
                                     }
                                     .padding(18)
                                     .frame(maxWidth: .infinity, alignment: .leading)
@@ -210,7 +210,7 @@ struct ListOnlineClassView: View {
             // MARK: - Create Class Button
             Button {
 
-                router.goToOnlinceClass()
+                router.push(OnlineClassRoute.create)
 
             } label: {
 
@@ -230,8 +230,10 @@ struct ListOnlineClassView: View {
             .padding(.trailing, 25)
             .padding(.bottom, 25)
         }
-        .task {
-            await viewModel.getListOnlineClass()
+        .onAppear {
+            Task {
+                await viewModel.getListOnlineClass()
+            }
         }
     }
 }

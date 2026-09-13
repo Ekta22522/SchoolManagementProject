@@ -3,7 +3,9 @@ import SwiftUI
 struct OnlineClassByIdView: View {
 
     @State private var viewModel = OnlineClassByIDViewModel()
-    @Environment(NavigationRouter.self) private var router
+    @State private var deleteViewModel = DeleteOnlineClassViewModel()
+    @State private var showDeleteConfirmation = false
+    @Environment(TabRouter.self) private var router
 
     let onlineClassId: Int
 
@@ -315,7 +317,7 @@ struct OnlineClassByIdView: View {
                         
                         HStack(spacing:20){
                             Button(action:{
-                                router.goToUpdateOnlineClass(id: onlineClassId)
+                                router.push(OnlineClassRoute.update(id: onlineClassId))
                             },label:{
                                 Text("Update")
                                     .foregroundStyle(Color.white)
@@ -325,7 +327,7 @@ struct OnlineClassByIdView: View {
                             .cornerRadius(10)
                             
                             Button(action:{
-                                router.goToDeleteOnlineClass(id: onlineClassId)
+                                showDeleteConfirmation = true
                             },label:{
                                 Text("Delete")
                                     .foregroundStyle(Color.white)
@@ -391,6 +393,15 @@ struct OnlineClassByIdView: View {
             await viewModel.getOnlineClassById(
                 id: onlineClassId
             )
+        }
+        .confirmationDialog("Delete this online class?", isPresented: $showDeleteConfirmation, titleVisibility: .visible) {
+            Button("Delete", role: .destructive) {
+                Task { await deleteViewModel.deleteOnlineClass(id: onlineClassId) }
+            }
+            Button("Cancel", role: .cancel) {}
+        }
+        .alert("Online class deleted", isPresented: $deleteViewModel.isSuccess) {
+            Button("OK") { router.pop() }
         }
     }
 
