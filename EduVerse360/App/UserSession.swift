@@ -54,8 +54,4 @@ class UserSession {
         role = nil
         isLoggedIn = false
     }
-
-    func updateUserModel(model: UserModel?){
-        self.user = model
-    }
 }

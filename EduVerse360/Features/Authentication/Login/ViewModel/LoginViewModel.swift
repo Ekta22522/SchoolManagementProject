@@ -43,21 +43,6 @@ class LoginViewModel{
     
     
     
-    func updateUserModel(sess: UserSession){
-        sess.updateUserModel(model: userModel)
-    }
-    
-    
-    func updateUsername(sess: UserSession){
-        sess.username = email
-    }
-    
-    func saveToken(sess:UserSession){
-        sess.token = token
-    }
-    
-    
-    
     func checkAllFields(){
         emailError = nil
         passwordError = nil

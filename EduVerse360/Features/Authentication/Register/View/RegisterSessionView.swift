@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct RegisterSessionView: View {
-    @Environment(NavigationRouter.self) private var router
+    @Environment(AuthRouter.self) private var router
     @State var viewModel = RegisterViewModel(registerservice: RegisterServerAPI())
     var body: some View {
 
@@ -330,7 +330,7 @@ struct RegisterSessionView: View {
                         .fontWeight(.bold)
                         .foregroundColor(Color.primary)
                         .onTapGesture {
-                            router.goToLogin()
+                            router.popToRoot()
                         }
                 }
                 .padding(.top, 18)
@@ -362,9 +362,7 @@ struct RegisterSessionView: View {
 
             if oldValue == true && newValue == false {
 
-                router.goToVerifyRegisterationOTP(
-                    email: viewModel.email
-                )
+                router.push(AuthRoute.verifyRegistrationOTP(email: viewModel.email))
             }
         }
     }

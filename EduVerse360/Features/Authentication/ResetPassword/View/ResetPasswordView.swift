@@ -12,7 +12,7 @@ struct ResetPasswordView: View {
     
     @State var viewModel = ResetPasswordViewModel()
     @FocusState private var focusedField : Field?
-    @Environment(NavigationRouter.self) private var router
+    @Environment(AuthRouter.self) private var router
     
     init(email: String) {
           let viewModel = ResetPasswordViewModel()
@@ -70,7 +70,7 @@ struct ResetPasswordView: View {
                     Task{
                         await viewModel.resetPassword()
                         if viewModel.isResetPasswordSucess{
-                            router.goToLogin()
+                            router.popToRoot()
                         }
                     }
                 },
@@ -98,7 +98,7 @@ struct ResetPasswordView: View {
                 .font(.headline)
                 .underline()
                 .onTapGesture {
-                    router.goToLogin()
+                    router.popToRoot()
                 }
             Spacer()
                 .padding()
