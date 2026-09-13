@@ -13,7 +13,6 @@ struct EduVerse360App: App {
     @State private var session = UserSession()
     @State private var authRouter = AuthRouter()
     @State private var tabRouter = TabRouter()
-    @State private var legacyRouter = NavigationRouter()
 
     var body: some Scene {
         WindowGroup {
@@ -21,7 +20,6 @@ struct EduVerse360App: App {
                 .environment(session)
                 .environment(authRouter)
                 .environment(tabRouter)
-                .environment(legacyRouter)
         }
     }
 }
