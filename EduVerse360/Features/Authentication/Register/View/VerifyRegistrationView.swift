@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct VerifyRegistrationView: View {
-    @Environment(NavigationRouter.self) private var router
+    @Environment(AuthRouter.self) private var router
     @State private var viewModel = VerifyRegistrationViewModel()
     
     init(email: String) {
@@ -47,7 +47,7 @@ struct VerifyRegistrationView: View {
                         print("OTP:", viewModel.otp)
                         await viewModel.verifyRegister()
                         if viewModel.isVerificationSucess{
-                            router.goToLogin()
+                            router.popToRoot()
                         }
                     }
                 }

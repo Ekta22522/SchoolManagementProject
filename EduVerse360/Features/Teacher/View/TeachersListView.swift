@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct TeachersListView: View {
-    @Environment(NavigationRouter.self) private var router
+    @Environment(TabRouter.self) private var router
    
     @State var viewModel = TeachersListViewModel(
         teacherService: TeacherMockAPI()
@@ -16,10 +16,7 @@ struct TeachersListView: View {
   
     var body: some View {
         
-        NavigationStack {
-            
-            
-            VStack{
+        VStack{
                 
             
                 if viewModel.teachers.isEmpty {
@@ -40,7 +37,7 @@ struct TeachersListView: View {
                                 .foregroundStyle(.secondary)
                         }
                         .onTapGesture {
-                            router.goToTeacherDetail(id: teacher.id)
+                            router.push(SharedRoute.teacherDetails(id: teacher.id))
                         }
                         
                     }
@@ -83,9 +80,9 @@ struct TeachersListView: View {
             }
             
           
-        }
     }
 }
+
     #Preview {
         TeachersListView()
     }

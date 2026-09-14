@@ -9,6 +9,9 @@ import Observation
 
 @Observable
 class TeacherAssignmentViewModel {
+    var classes: [Class] = []
+    var listSection: [Section] = []
+    var isLoading = false
 
     var title = ""
     var description = ""
@@ -17,19 +20,68 @@ class TeacherAssignmentViewModel {
     var subject = ""
     var dueDate = ""
     var maxMarks = 0
-    var status = ""
+
+    
+    var selectedFilter = "Published"
+
     var attachment: Data? = nil
     var attachmentFileName: String? = nil
-    var isLoading = false
+
+    var isAllSecSuccess = false
     var isSuccess = false
+    var isFetchingAllClasses = false
     var errorMessage: String?
 
     private let teacherAssignmentService: AssignmentProtocol
+    private let allClassService: ClassProtocol
+    private let listSectionService: SectionProtocol
 
     init(
-        teacherAssignmentService: AssignmentProtocol = AssignmentServerAPI()
+        teacherAssignmentService: AssignmentProtocol = AssignmentServerAPI(),
+        allclassservice: ClassProtocol = ClassServerAPI(),
+        listsectionservice: SectionProtocol = SectionServerAPI()
     ) {
         self.teacherAssignmentService = teacherAssignmentService
+        self.allClassService = allclassservice
+        self.listSectionService = listsectionservice
+    }
+
+    func getAllClasses() async {
+        print("Fetching all classes...")
+
+        isLoading = true
+        defer {
+            isLoading = false
+            print("disclose all classes")
+        }
+
+        do {
+            let allclassesRes: AllclassesRes = try await self.allClassService.getAllClasses()
+            classes = allclassesRes.data
+
+            isFetchingAllClasses = true
+            print("All Classes are fetched Successfully", isFetchingAllClasses)
+
+        } catch {
+            self.errorMessage = error.localizedDescription
+        }
+    }
+
+    func getAllSection() async {
+        print("Listing section process is started")
+        isLoading = true
+        defer {
+            isLoading = false
+            print("Listing section process is finished")
+        }
+        do {
+            let response: ListSectionRes = try await self.listSectionService.listSection()
+            listSection = response.data
+            isAllSecSuccess = true
+            print("All section Fetched Successfully")
+        } catch {
+            errorMessage = error.localizedDescription
+        }
     }
 
     func createTeacherAssignment() async {
@@ -52,7 +104,7 @@ class TeacherAssignmentViewModel {
             subject: subject,
             dueDate: dueDate,
             maxMarks: maxMarks,
-            status: status,
+            status: selectedFilter.lowercased(),
             attachment: attachment,
             attachmentFileName: attachmentFileName
         )
@@ -69,10 +121,10 @@ class TeacherAssignmentViewModel {
 
         } catch {
 
-            print("❌ Create assignment failed:", error)
+            print("Create assignment failed:", error)
 
             errorMessage = error.localizedDescription
-            isSuccess = false
+          
         }
     }
 }

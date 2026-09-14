@@ -8,8 +8,10 @@
 import SwiftUI
 
 struct SectionByIdView: View {
-    @Environment(NavigationRouter.self) private var router
+    @Environment(TabRouter.self) private var router
     @State var viewModel = SectionByIdViewModel()
+    @State private var deleteViewModel = DeleteSectionViewModel()
+    @State private var showDeleteConfirmation = false
    
     var sectionId : Int
     var body: some View {
@@ -33,7 +35,7 @@ struct SectionByIdView: View {
             .shadow(radius: 10)
             HStack{
                 Button(action:{
-                    router.goToUpdateSection(id: sectionId)
+                    router.push(SectionRoute.update(id: sectionId))
                 },label:{
                     Text("Update")
                         .foregroundStyle(.white)
@@ -43,7 +45,7 @@ struct SectionByIdView: View {
                 .cornerRadius(10)
                 
                 Button(action:{
-                    router.goToDeleteSection(id: sectionId)
+                    showDeleteConfirmation = true
                 },label:{
                     Text("Delete")
                         .foregroundStyle(.white)
@@ -55,6 +57,15 @@ struct SectionByIdView: View {
     }
         .task {
             await viewModel.section(id: sectionId)
+        }
+        .confirmationDialog("Delete this section?", isPresented: $showDeleteConfirmation, titleVisibility: .visible) {
+            Button("Delete", role: .destructive) {
+                Task { await deleteViewModel.deleteSection(id: sectionId) }
+            }
+            Button("Cancel", role: .cancel) {}
+        }
+        .alert("Section deleted", isPresented: $deleteViewModel.isDeleteSuccess) {
+            Button("OK") { router.pop() }
         }
     }
 }

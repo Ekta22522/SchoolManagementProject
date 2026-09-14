@@ -4,7 +4,7 @@ struct ListSectionView: View {
 
     @State var viewModel = ListSectionViewModel()
 
-    @Environment(NavigationRouter.self) private var router
+    @Environment(TabRouter.self) private var router
 
     var body: some View {
         VStack {
@@ -31,15 +31,15 @@ struct ListSectionView: View {
                         Text("Created At: \(section.createdAt)")
                     }
                     .onTapGesture {
-                        router.goToSectionById(
-                            id:(section.id)
-                        )
+                        router.push(SectionRoute.detail(id: section.id))
                     }
                 }
             }
         }
-        .task {
-            await viewModel.getAllSection()
+        .onAppear {
+            Task {
+                await viewModel.getAllSection()
+            }
         }
     }
 }

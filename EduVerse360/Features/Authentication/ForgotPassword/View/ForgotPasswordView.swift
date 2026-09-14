@@ -9,7 +9,7 @@ import SwiftUI
 
 struct ForgotPasswordView: View {
     @FocusState private var focusedField : Field?
-    @Environment(NavigationRouter.self) private var router
+    @Environment(AuthRouter.self) private var router
     
     
     
@@ -57,7 +57,7 @@ struct ForgotPasswordView: View {
                     Task{
                         await viewModel.forgotPassword()
                         if viewModel.isForgotPasswordSuccess{
-                            router.goToVerifyOtp(email: viewModel.email)
+                            router.push(AuthRoute.verifyOtp(email: viewModel.email))
                         }
                     }
                 },
@@ -85,7 +85,7 @@ struct ForgotPasswordView: View {
                 .font(.headline)
                 .underline()
                 .onTapGesture {
-                    router.goToLogin()
+                    router.popToRoot()
                 }
             Spacer()
                 .padding()

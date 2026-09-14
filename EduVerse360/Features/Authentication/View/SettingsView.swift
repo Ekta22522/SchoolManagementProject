@@ -10,7 +10,7 @@ import SwiftUI
 
 struct SettingsView: View {
   
-    @Environment(NavigationRouter.self) private var router
+    @Environment(TabRouter.self) private var router
     var body: some View {
         VStack(spacing: 20){
         HStack() {
@@ -24,7 +24,7 @@ struct SettingsView: View {
                 .fontWeight(.semibold)
         }
         Button(action: {
-            router.goToProfile()
+            router.push(SharedRoute.profile)
         } , label: {
             HStack() {
                 Image(systemName: "person")

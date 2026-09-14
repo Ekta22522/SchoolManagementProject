@@ -14,6 +14,8 @@ extension Color{
     static let teal = Color(hex:"005C7B")
     static let inputFields = Color(hex:"f2f3f7")
     static let divider = Color(hex : "dcdee5")
+    static let hover = Color(hex : "fafbfc")
+    static let blueTint = Color(hex:"EEF2FE")
     static let primary = Color(hex: "0047D3")
     static let homesecondarytext = Color(hex: "B6C4FF")
     static let secondaryText = Color(hex:"434656")

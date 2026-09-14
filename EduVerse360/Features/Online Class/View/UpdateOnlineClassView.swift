@@ -10,7 +10,7 @@ import SwiftUI
 struct UpdateOnlineClassView: View {
     @FocusState private var focusedField: Field?
     @State var viewModel = UpdateOnlineClassViewModel()
-    @Environment(NavigationRouter.self) private var router
+    @Environment(TabRouter.self) private var router
     let onlineClassId : Int
     var body: some View {
         

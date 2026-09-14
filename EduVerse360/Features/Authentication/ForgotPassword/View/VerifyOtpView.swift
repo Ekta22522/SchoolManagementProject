@@ -11,7 +11,7 @@ struct VerifyOtpView: View {
     
     @State var viewModel = VerifyOtpViewModel()
     @FocusState private var focusedField : Field?
-    @Environment(NavigationRouter.self) private var router
+    @Environment(AuthRouter.self) private var router
     
     init(email: String) {
           let viewModel = VerifyOtpViewModel()
@@ -58,7 +58,7 @@ struct VerifyOtpView: View {
                     await viewModel.verifyOtp()
 
                     if viewModel.isVerifyOtpSucess {
-                        router.goToResetPassword(email: viewModel.email)
+                        router.push(AuthRoute.resetPassword(email: viewModel.email))
                     }
                 }
             } label: {

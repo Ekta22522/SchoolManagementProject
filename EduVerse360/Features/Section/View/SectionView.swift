@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct SectionView: View {
-    @Environment(NavigationRouter.self) private var router
+    @Environment(TabRouter.self) private var router
     @FocusState private var focusedField : Field?
     @State var viewModel = SectionViewModel()
     

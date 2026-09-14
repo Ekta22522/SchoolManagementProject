@@ -35,14 +35,14 @@ struct ClassItemRow: View {
 
 struct AllClassesView: View {
     
-    @Environment(NavigationRouter.self) private var router
+    @Environment(TabRouter.self) private var router
     @State private var viewModel = AllClassesViewModel()
     
     var body: some View {
         VStack(alignment:.trailing){
             HStack(spacing:50){
                 Button(action:{
-                    router.goToAllOnlineClass()
+                    router.push(OnlineClassRoute.list)
                 },label:{
                     Text("Online Class")
                         .foregroundStyle(Color.white)
@@ -56,7 +56,7 @@ struct AllClassesView: View {
                 Text("All Classes")
                     .font(.headline)
                 Button(action:{
-                    router.goToClasses()
+                    router.push(ClassRoute.create)
                 },label:{
                     Text("Add")
                         .foregroundStyle(Color.white)
@@ -73,14 +73,16 @@ struct AllClassesView: View {
                     title: classItem.className,
                     subtitle: classItem.description,
                     action: {
-                        router.goToClassById(id: "\(classItem.id)")
+                        router.push(ClassRoute.detail(id: "\(classItem.id)"))
                     })
             }
         }
         .navigationTitle("All Classes")
         .navigationBarTitleDisplayMode(.inline)
-        .task {
-            await viewModel.getAllClasses()
+        .onAppear {
+            Task {
+                await viewModel.getAllClasses()
+            }
         }
     }
 }

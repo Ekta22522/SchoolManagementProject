@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct StudentsListView: View {
-    @Environment(NavigationRouter.self) private var router
+    @Environment(TabRouter.self) private var router
 
     @State private var viewModel = StudentListViewModel(
         studentService: StudentMockAPI()
@@ -16,10 +16,7 @@ struct StudentsListView: View {
 
     var body: some View {
 
-        NavigationStack {
-            
-            
-            VStack{
+        VStack{
                 if viewModel.students.isEmpty{
                     Text("Student not Available")
                         .foregroundColor(Color.secondaryText)
@@ -37,7 +34,7 @@ struct StudentsListView: View {
                                 .foregroundStyle(.secondary)
                         }
                         .onTapGesture {
-                            router.goToStudentDetail(id: student.id)
+                            router.push(SharedRoute.studentDetails(id: student.id))
                         }
                         
                     }
@@ -79,8 +76,6 @@ struct StudentsListView: View {
             }
             
             
-        }
-        
     }
 }
 

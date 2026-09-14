@@ -25,7 +25,7 @@ enum Field: Hashable{
 struct LoginView: View {
     
     @FocusState private var focusedField : Field?
-    @Environment(NavigationRouter.self) private var router
+    @Environment(AuthRouter.self) private var router
     @Environment(UserSession.self) private var session
     
     @State var viewModel = LoginViewModel(loginservice: LoginServerAPI())
@@ -119,7 +119,7 @@ struct LoginView: View {
                                     .font(.subheadline)
                                     .foregroundColor(.primary)
                                     .onTapGesture {
-                                        router.goToForgotPassword()
+                                        router.push(AuthRoute.forgotPassword)
                                     }
                                 
                                 
@@ -143,12 +143,8 @@ struct LoginView: View {
                             Task {
                                 await viewModel.loginUser()
 
-                                if viewModel.isLoginSucceess {
-                                    viewModel.updateUsername(sess: session)
-                                    viewModel.saveToken(sess: session)
-                                    session.isLoggedIn = true
-                                    session.updateUserModel(model: viewModel.userModel)
-                                    router.goToMainTab()
+                                if viewModel.isLoginSucceess, let user = viewModel.userModel {
+                                    session.loginSucceeded(user: user)
                                 }
 
                                 }
@@ -220,7 +216,7 @@ struct LoginView: View {
                                 .font(.footnote)
                                 .foregroundColor(Color.primary)
                                 .onTapGesture {
-                                    router.goToRegister()
+                                    router.push(AuthRoute.register)
                                 }
                             
                         }
