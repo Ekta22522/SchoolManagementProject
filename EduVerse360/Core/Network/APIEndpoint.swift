@@ -33,6 +33,7 @@ enum APIEndpoint {
     case createTeacherAssignment
     case allTeacherAssignment
     case getTeacherAssignmentById(id:Int)
+    case updateAssignment(id:Int)
     case profile
     case students
     case teachers
@@ -119,6 +120,8 @@ extension APIEndpoint{
             return"api/assignments"
         case.getTeacherAssignmentById(let id):
             return"api/assignments/\(id)"
+        case.updateAssignment(let id ):
+            return "api/assignments/\(id)"
         case.teachers:
             return ""
         case.profile:
@@ -187,6 +190,9 @@ extension APIEndpoint{
         case.allTeacherAssignment,
             .getTeacherAssignmentById:
             return.GET
+            
+        case.updateAssignment:
+            return.PUT
         }
     }
 }

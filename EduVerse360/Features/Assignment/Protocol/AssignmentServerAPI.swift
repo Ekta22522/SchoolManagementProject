@@ -94,5 +94,14 @@ class AssignmentServerAPI: AssignmentProtocol {
         }
     }
     
+    func updateTeacherAssignment(id:Int) async throws -> UpdateAssignmentRes {
+        do{
+            let response : UpdateAssignmentRes = try await APIClient.shared.request(APIEndpoint.updateAssignment(id: id))
+            return response
+        }catch let error{
+            throw error
+        }
+    }
+    
 }
 
