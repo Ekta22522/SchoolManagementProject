@@ -9,5 +9,6 @@ protocol AssignmentProtocol{
     func createAssignment(req:AssignmentRequest) async throws -> AssignmentResponse
     func getAllAssignment() async throws -> AllTeacherAssignmentRes
     func getTeacherAssignmentById (id:Int) async throws -> TeacherAssignimentByIdRes
+    func updateTeacherAssignment(id:Int) async throws -> UpdateAssignmentRes
     
 }
