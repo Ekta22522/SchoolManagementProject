@@ -34,6 +34,7 @@ enum APIEndpoint {
     case allTeacherAssignment
     case getTeacherAssignmentById(id:Int)
     case updateAssignment(id:Int)
+    case deleteAssignment(id:Int)
     case profile
     case students
     case teachers
@@ -122,6 +123,8 @@ extension APIEndpoint{
             return"api/assignments/\(id)"
         case.updateAssignment(let id ):
             return "api/assignments/\(id)"
+        case.deleteAssignment(let id ):
+            return "api/assignments/\(id)"
         case.teachers:
             return ""
         case.profile:
@@ -179,7 +182,8 @@ extension APIEndpoint{
             
         case.deleteClass,
             .deleteSection,
-            .deleteOnlineClass:
+            .deleteOnlineClass,
+            .deleteAssignment:
             return.DELETE
             
         

@@ -9,9 +9,15 @@ import SwiftUI
 
 struct TeacherAssignmentByIdView: View {
     @State var viewModel = TeacherAssignmentByIdViewModel()
+    @State private var deleteViewModel = DeleteTeacherAssignmentViewModel()
+    @State private var showDeleteConfirmation = false
     let assignmentId : Int
-    
+
+    @Environment(TabRouter.self) private var router
+    @Environment(UserSession.self) private var session
+
     @State private var showPdf = false
+    @State private var hasAppeared = false
     
     var body: some View {
         ZStack{
@@ -100,6 +106,42 @@ struct TeacherAssignmentByIdView: View {
                             .clipShape(RoundedRectangle(cornerRadius: 16))
                             .shadow(color: .black.opacity(0.08), radius: 6, x: 0, y: 3)
                         }
+
+                        // MARK: Update
+                        if session.activeRole != .student {
+                            Button {
+                                router.push(AssignmentRoute.update(id: assignmentId))
+                            } label: {
+                                Text("Update")
+                                    .foregroundStyle(Color.white)
+                                    .frame(maxWidth: .infinity)
+                                    .padding(.vertical, 18)
+                                    .background(Color.primary)
+                                    .clipShape(RoundedRectangle(cornerRadius: 16))
+                            }
+                            .padding(.top, 8)
+
+                            // MARK: Delete
+                            Button {
+                                showDeleteConfirmation = true
+                            } label: {
+                                Group {
+                                    if deleteViewModel.isLoading {
+                                        ProgressView()
+                                            .tint(.white)
+                                    } else {
+                                        Text("Delete Assignment")
+                                    }
+                                }
+                                .foregroundStyle(Color.white)
+                                .frame(maxWidth: .infinity)
+                                .padding(.vertical, 18)
+                                .background(Color.red)
+                                .clipShape(RoundedRectangle(cornerRadius: 16))
+                            }
+                            .disabled(deleteViewModel.isLoading)
+                            .padding(.top, 8)
+                        }
                     }
                     .padding()
                 }
@@ -110,6 +152,48 @@ struct TeacherAssignmentByIdView: View {
         }
         .task {
             await viewModel.TeacherAssignmentById(id: assignmentId)
+        }
+        // When the teacher returns from the update screen the first
+        // .task has already run, so refetch here to show edited values.
+        .onAppear {
+            if hasAppeared {
+                Task {
+                    await viewModel.TeacherAssignmentById(id: assignmentId)
+                }
+            }
+            hasAppeared = true
+        }
+        // Ask before deleting — destructive, so the teacher has to confirm.
+        .alert(
+            "Delete Assignment?",
+            isPresented: $showDeleteConfirmation
+        ) {
+            Button("Delete", role: .destructive) {
+                Task {
+                    await deleteViewModel.deleteTeacherAssignment(id: assignmentId)
+                }
+            }
+            Button("Cancel", role: .cancel) {}
+        } message: {
+            Text("Are you sure you want to delete this assignment? This action cannot be undone.")
+        }
+        // Delete succeeded — go back to the assignments list, which
+        // refetches on reappear so the deleted card disappears.
+        .onChange(of: deleteViewModel.isSuccess) { _, success in
+            if success { router.pop() }
+        }
+        // Delete failed — surface the API error so the teacher isn't
+        // left wondering why nothing happened.
+        .alert(
+            "Couldn't Delete",
+            isPresented: Binding(
+                get: { deleteViewModel.errorMessage != nil },
+                set: { if !$0 { deleteViewModel.errorMessage = nil } }
+            )
+        ) {
+            Button("OK", role: .cancel) {}
+        } message: {
+            Text(deleteViewModel.errorMessage ?? "")
         }
     }
     

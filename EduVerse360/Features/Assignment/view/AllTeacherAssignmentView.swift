@@ -5,6 +5,7 @@ struct AllTeacherAssignmentView: View {
     @Environment(TabRouter.self) private var router
     
     @State private var viewModel = AllTeacherAssignmentViewModel()
+    @State private var hasAppeared = false
     
     
     
@@ -114,6 +115,17 @@ struct AllTeacherAssignmentView: View {
             .task {
                 await viewModel.allTeacherAssignment()
                 }
+            // The first .task only runs once, so when the teacher pops
+            // back here after viewing/updating/deleting an assignment
+            // the list would be stale — refetch on every reappear.
+            .onAppear {
+                if hasAppeared {
+                    Task {
+                        await viewModel.allTeacherAssignment()
+                    }
+                }
+                hasAppeared = true
+            }
             
             
             

@@ -10,4 +10,5 @@ import Foundation
 enum AssignmentRoute: Hashable {
     case create
     case detail(id: Int)
+    case update(id: Int)
 }

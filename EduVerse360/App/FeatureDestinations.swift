@@ -54,6 +54,8 @@ struct FeatureDestinations: ViewModifier {
                     CreateTeacherAssignmentView()
                 case .detail(let assignmentID):
                     TeacherAssignmentByIdView(assignmentId: assignmentID)
+                case .update(let assignmentID):
+                    UpdateTeacherAssignmentView(assignmentId: assignmentID)
                 }
             }
             .navigationDestination(for: SharedRoute.self) { route in
