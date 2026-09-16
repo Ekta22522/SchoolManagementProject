@@ -30,6 +30,13 @@ private var assignments: [Assignment] = []
     
     var filteredAssignments : [Assignment] = []
 
+    var totalCount: Int { assignments.count }
+    var publishedCount: Int { assignments.filter { $0.status.lowercased() == "published" }.count }
+    var pendingCount: Int { assignments.filter { $0.status.lowercased() == "pending" }.count }
+    var recentAssignments: [Assignment] {
+        Array(assignments.sorted { $0.createdAt > $1.createdAt }.prefix(5))
+    }
+
 
     private var allTeacherAssignmentService : AssignmentProtocol
     init(allteacherassignmentservice: AssignmentProtocol = AssignmentServerAPI()){

@@ -177,10 +177,19 @@ struct TeacherAssignmentByIdView: View {
         } message: {
             Text("Are you sure you want to delete this assignment? This action cannot be undone.")
         }
-        // Delete succeeded — go back to the assignments list, which
-        // refetches on reappear so the deleted card disappears.
-        .onChange(of: deleteViewModel.isSuccess) { _, success in
-            if success { router.pop() }
+        // Delete succeeded — show confirmation, then go back to the
+        // assignments list, which refetches on reappear so the
+        // deleted card disappears.
+        .alert(
+            "Deleted Successfully",
+            isPresented: Binding(
+                get: { deleteViewModel.isSuccess },
+                set: { if !$0 { deleteViewModel.isSuccess = false } }
+            )
+        ) {
+            Button("OK") { router.pop() }
+        } message: {
+            Text("The assignment was deleted successfully.")
         }
         // Delete failed — surface the API error so the teacher isn't
         // left wondering why nothing happened.

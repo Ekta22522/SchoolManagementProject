@@ -52,7 +52,7 @@ enum AppTab: String, Hashable {
         case .classes:
             switch role {
             case .teacher:
-                TeacherOnlyView()
+                ListOnlineClassView()
             default:
                 AllClassesView()
             }

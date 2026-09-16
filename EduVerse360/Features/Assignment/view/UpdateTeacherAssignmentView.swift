@@ -55,8 +55,16 @@ struct UpdateTeacherAssignmentView: View {
         .task {
             await viewModel.loadAssignment(id: assignmentId)
         }
-        .onChange(of: viewModel.isSuccess) { _, success in
-            if success { dismiss() }
+        .alert(
+            "Updated Successfully",
+            isPresented: Binding(
+                get: { viewModel.isSuccess },
+                set: { if !$0 { viewModel.isSuccess = false } }
+            )
+        ) {
+            Button("OK") { dismiss() }
+        } message: {
+            Text("The assignment was updated successfully.")
         }
         .alert(
             "Something went wrong",

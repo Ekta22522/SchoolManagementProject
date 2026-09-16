@@ -440,23 +440,16 @@ struct UpdateOnlineClassView: View {
                 await viewModel.getOnlineClassId(id: onlineClassId)
                 
             }
-            .alert("Success", isPresented: $viewModel.isSuccess) {
+            .alert(
+                "Updated Successfully",
+                isPresented: $viewModel.isSuccess
+            ) {
                 Button("OK") {
-                    // Optional: navigate back
+                    router.pop()
                 }
             } message: {
-                Text("Online class updated successfully.")
+                Text("The online class was updated successfully.")
             }
-            if let error = viewModel.errorMessage {
-                
-                Text(error)
-                    .font(.caption)
-                    .foregroundColor(.red)
-                    .padding(.top, 4)
-            }
-            
-            
-            
         }
         .padding(.horizontal, 25)
         .frame(

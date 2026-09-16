@@ -8,7 +8,20 @@
 import SwiftUI
 
 struct HomeView: View {
-    
+    @Environment(UserSession.self) private var session
+
+    var body: some View {
+        switch session.activeRole {
+        case .schoolAdmin, .superAdmin, .teacher:
+            DashboardView()
+        case .student:
+            MarketingHomeView()
+        }
+    }
+}
+
+private struct MarketingHomeView: View {
+
 
     var body: some View {
      
@@ -158,4 +171,5 @@ struct HomeView: View {
 
 #Preview {
     HomeView()
+        .environment(UserSession())
 }

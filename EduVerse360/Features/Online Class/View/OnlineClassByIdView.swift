@@ -5,6 +5,7 @@ struct OnlineClassByIdView: View {
     @State private var viewModel = OnlineClassByIDViewModel()
     @State private var deleteViewModel = DeleteOnlineClassViewModel()
     @State private var showDeleteConfirmation = false
+    @State private var hasAppeared = false
     @Environment(TabRouter.self) private var router
 
     let onlineClassId: Int
@@ -40,17 +41,6 @@ struct OnlineClassByIdView: View {
                         )
                         .padding(.horizontal, 25)
                         .padding(.top, 30)
-
-                        // MARK: - Delete Error
-
-                        if let error = deleteViewModel.errorMessage {
-
-                            Text(error)
-                                .font(.caption)
-                                .foregroundColor(.red)
-                                .padding(.top, 4)
-                                .padding(.horizontal, 25)
-                        }
 
 
                         // MARK: - Class Detail Card
@@ -326,28 +316,39 @@ struct OnlineClassByIdView: View {
                         )
                         .padding(.horizontal, 25)
                         
-                        HStack(spacing:20){
+                        HStack(spacing:15){
                             Button(action:{
                                 router.push(OnlineClassRoute.update(id: onlineClassId))
                             },label:{
                                 Text("Update")
+                                    .fontWeight(.semibold)
                                     .foregroundStyle(Color.white)
+                                    .frame(maxWidth: .infinity, minHeight: 50)
+                                    .background(Color.primary)
+                                    .clipShape(RoundedRectangle(cornerRadius: 12))
                             })
-                            .frame(maxWidth: 200,maxHeight: 50)
-                            .background(Color.primary)
-                            .cornerRadius(10)
-                            
+
                             Button(action:{
                                 showDeleteConfirmation = true
                             },label:{
-                                Text("Delete")
-                                    .foregroundStyle(Color.white)
+                                Group {
+                                    if deleteViewModel.isLoading {
+                                        ProgressView()
+                                            .tint(.white)
+                                    } else {
+                                        Text("Delete Class")
+                                    }
+                                }
+                                .fontWeight(.semibold)
+                                .foregroundStyle(Color.white)
+                                .frame(maxWidth: .infinity, minHeight: 50)
+                                .background(Color.red)
+                                .clipShape(RoundedRectangle(cornerRadius: 12))
                             })
-                            .frame(maxWidth: 200,maxHeight: 50)
-                            .background(Color.primary)
-                            .cornerRadius(10)
-                            
+                            .disabled(deleteViewModel.isLoading)
+
                         }
+                        .padding(.horizontal, 25)
                     }
 
                 }
@@ -405,14 +406,58 @@ struct OnlineClassByIdView: View {
                 id: onlineClassId
             )
         }
-        .confirmationDialog("Delete this online class?", isPresented: $showDeleteConfirmation, titleVisibility: .visible) {
+        // The .task above runs only once, so after returning from the
+        // update screen the details would be stale — refetch on reappear.
+        .onAppear {
+            if hasAppeared {
+                Task {
+                    await viewModel.getOnlineClassById(
+                        id: onlineClassId
+                    )
+                }
+            }
+            hasAppeared = true
+        }
+        // Ask before deleting — destructive, so the teacher has to confirm.
+        .alert(
+            "Delete Online Class?",
+            isPresented: $showDeleteConfirmation
+        ) {
             Button("Delete", role: .destructive) {
-                Task { await deleteViewModel.deleteOnlineClass(id: onlineClassId) }
+                Task {
+                    await deleteViewModel.deleteOnlineClass(id: onlineClassId)
+                }
             }
             Button("Cancel", role: .cancel) {}
+        } message: {
+            Text("Are you sure you want to delete this online class? This action cannot be undone.")
         }
-        .alert("Online class deleted", isPresented: $deleteViewModel.isSuccess) {
+        // Delete succeeded — show confirmation, then go back to the
+        // online class list, which refetches on reappear so the
+        // deleted card disappears.
+        .alert(
+            "Deleted Successfully",
+            isPresented: Binding(
+                get: { deleteViewModel.isSuccess },
+                set: { if !$0 { deleteViewModel.isSuccess = false } }
+            )
+        ) {
             Button("OK") { router.pop() }
+        } message: {
+            Text("The online class was deleted successfully.")
+        }
+        // Delete failed — surface the API error so the teacher isn't
+        // left wondering why nothing happened.
+        .alert(
+            "Couldn't Delete",
+            isPresented: Binding(
+                get: { deleteViewModel.errorMessage != nil },
+                set: { if !$0 { deleteViewModel.errorMessage = nil } }
+            )
+        ) {
+            Button("OK", role: .cancel) {}
+        } message: {
+            Text(deleteViewModel.errorMessage ?? "")
         }
     }
 
