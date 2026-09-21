@@ -9,6 +9,5 @@ import Foundation
 
 enum SharedRoute: Hashable {
     case profile
-    case studentDetails(id: Int)
     case teacherDetails(id: Int)
 }

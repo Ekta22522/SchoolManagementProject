@@ -58,12 +58,20 @@ struct FeatureDestinations: ViewModifier {
                     UpdateTeacherAssignmentView(assignmentId: assignmentID)
                 }
             }
+            .navigationDestination(for: StudentRoute.self) { route in
+                switch route {
+                case .create:
+                    CreateStudentView()
+                case .studentById(let id):
+                    StudentByIdView(studentId: id)
+                case .update(let student):
+                    UpdateStudentView(student: student)
+                }
+            }
             .navigationDestination(for: SharedRoute.self) { route in
                 switch route {
                 case .profile:
                     ProfileView()
-                case .studentDetails(let studentID):
-                    StudentDetailView(studentId: studentID)
                 case .teacherDetails(let teacherID):
                     TeacherDetailView(teacherId: teacherID)
                 }

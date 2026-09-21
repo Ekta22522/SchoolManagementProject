@@ -14,7 +14,11 @@ enum StudentError : LocalizedError{
 
 protocol StudentProtocol {
     
-    func getStudents() async throws -> [UserModel]
-    func getStudent(by id:Int) async throws -> UserModel
-    func searchStudent(searchText:String) async throws -> [UserModel]
+    func studentList()async throws -> StudentListRes
+    func createStudent(req:CreateStudentReq) async throws -> CreateStudentRes
+    func getStudentById(id:Int)async throws -> StudentByIdRes
+    func updateStudent(req:UpdateStudentReq,id:Int)async throws -> UpdateStudentRes
+   
+    
+    
 }

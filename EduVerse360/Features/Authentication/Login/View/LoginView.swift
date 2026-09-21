@@ -19,6 +19,13 @@ enum Field: Hashable{
     case otp
     case meetingUrl
     case title
+    case studentUserName
+    case studentEmail
+    case admissionNumber
+    case major
+    case address
+    case guardianName
+    case guardianPhone
 }
 
 

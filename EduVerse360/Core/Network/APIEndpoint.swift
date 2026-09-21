@@ -37,8 +37,11 @@ enum APIEndpoint {
     case deleteAssignment(id:Int)
     case profile
     case students
+    case createStudent
+    case studentById(id:Int)
+    case updateStudent(id:Int)
     case teachers
-    case student(id:Int)
+  
     case teacher(id:Int)
     case uploadProfileImage(id:Int)
     case dashboard
@@ -103,8 +106,6 @@ extension APIEndpoint{
             
         case.createOnlineClass:
             return "api/online-classes"
-        case.students:
-            return ""
         case.readAllOnlineClass:
             return"api/online-classes"
         case.onlineClassById(let id):
@@ -129,9 +130,16 @@ extension APIEndpoint{
             return ""
         case.profile:
             return "api/users/me"
-        case.student(let id):
-            return ""
-          
+            
+            
+        case.students:
+            return "api/students"
+        case.createStudent:
+          return "api/students"
+        case.studentById(let id):
+            return "api/students/\(id)"
+        case.updateStudent(let id):
+            return "api/students/\(id)"
         case.teacher(let id):
             return ""
             
@@ -157,13 +165,13 @@ extension APIEndpoint{
             .classes,
             .resetPassword,
             .createSection,
-            .createOnlineClass:
+            .createOnlineClass,
+            .createStudent:
             return .POST
             
         case.students,
             .profile,
             .teachers,
-            .student,
             .dashboard,
             .teacher,
             .allClasses,
@@ -172,12 +180,14 @@ extension APIEndpoint{
             .classSection,
             .sectionById,
             .readAllOnlineClass,
-            .onlineClassById:
+            .onlineClassById,
+            .studentById:
             return .GET
             
         case.updateClass,
             .updateSection,
-            .updateOnlineClass:
+            .updateOnlineClass,
+            .updateStudent:
             return.PUT
             
         case.deleteClass,

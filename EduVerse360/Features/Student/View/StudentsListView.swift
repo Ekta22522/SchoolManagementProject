@@ -9,76 +9,101 @@ import SwiftUI
 
 struct StudentsListView: View {
     @Environment(TabRouter.self) private var router
-
-    @State private var viewModel = StudentListViewModel(
-        studentService: StudentMockAPI()
-    )
+    @State var viewModel = StudentListViewModel()
 
     var body: some View {
+        VStack(spacing: 0) {
+            if let errorMessage = viewModel.errorMessage {
+                Text(errorMessage)
+                    .font(.subheadline)
+                    .foregroundStyle(.red)
+                    .padding(.horizontal)
+                    .padding(.vertical, 8)
+            }
 
-        VStack{
-                if viewModel.students.isEmpty{
-                    Text("Student not Available")
-                        .foregroundColor(Color.secondaryText)
-                }else{
-                    
-                    List(viewModel.students) { student in
-                        
-                        VStack(alignment: .leading) {
-                            
-//                            Text("\(student.firstName) \(student.lastName)")
-//                                .font(.headline)
-//                                .foregroundColor(Color.primary)
-                            
-                            Text(student.email)
-                                .foregroundStyle(.secondary)
-                        }
-                        .onTapGesture {
-                            router.push(SharedRoute.studentDetails(id: student.id))
-                        }
-                        
+            if viewModel.students.isEmpty {
+                if !viewModel.isLoading {
+                    Spacer()
+                    VStack(spacing: 12) {
+                        Image(systemName: "person.3")
+                            .font(.largeTitle)
+                            .foregroundStyle(Color.tertiaryText)
+                        Text("No students available")
+                            .foregroundStyle(.secondary)
                     }
-                    
-                    
+                    Spacer()
                 }
-                
-                
-                HStack{
-                    Image(systemName: "magnifyingglass")
-                        .foregroundColor(Color.secondaryText)
-                    TextField("search...", text: $viewModel.searchText)
-                    if !viewModel.searchText.isEmpty {
-                        
-                        Button {
-                            viewModel.searchText = ""
-                        } label: {
-                            
-                            Image(systemName: "xmark.circle.fill")
-                                .foregroundStyle(.gray)
+            } else {
+                List(viewModel.students, id: \.id) { student in
+                    NavigationLink(value: StudentRoute.studentById(id: student.id)) {
+                        HStack(spacing: 12) {
+                            Circle()
+                                .fill(Color.teal.opacity(0.15))
+                                .frame(width: 40, height: 40)
+                                .overlay {
+                                    Text(initials(for: student.userName))
+                                        .font(.subheadline)
+                                        .fontWeight(.bold)
+                                        .foregroundStyle(Color.teal)
+                                }
+
+                            VStack(alignment: .leading, spacing: 2) {
+                                Text(student.userName ?? "N/A")
+                                    .font(.headline)
+                                    .foregroundStyle(Color.secondaryText)
+
+                                Text(student.email ?? "N/A")
+                                    .font(.caption)
+                                    .foregroundStyle(Color.tertiaryText)
+                                    .lineLimit(1)
+
+                                Text("\(student.admissionNumber) · \(student.major) · \(student.enrollmentYear)")
+                                    .font(.caption2)
+                                    .foregroundStyle(Color.tertiaryText)
+                            }
                         }
+                        .padding(.vertical, 4)
                     }
-                    
                 }
-                .padding()
-                .background(Color(.systemGray6))
-                .cornerRadius(12)
-                .padding(.horizontal)
-                
+                .listStyle(.plain)
             }
-            .navigationTitle("Students")
-            .task {
-                await viewModel.loadStudents()
-            }
-            .onChange(of: viewModel.searchText){
-                Task{
-                    await viewModel.searchStudent()
+        }
+        .navigationTitle("Students")
+        .toolbar {
+            ToolbarItem(placement: .topBarTrailing) {
+                Button {
+                    router.push(StudentRoute.create)
+                } label: {
+                    Image(systemName: "plus")
                 }
             }
-            
-            
+        }
+        .refreshable {
+            await viewModel.ListStudent()
+        }
+        .overlay {
+            if viewModel.isLoading {
+                LoadingView(message: "Loading students...")
+            }
+        }
+        .onAppear {
+            Task {
+                await viewModel.ListStudent()
+            }
+        }
+    }
+
+    private func initials(for name: String?) -> String {
+        guard let name, !name.isEmpty else { return "?" }
+        let parts = name.split(separator: " ")
+        let first = parts.first?.first.map(String.init) ?? ""
+        let last = parts.count > 1 ? (parts.last?.first.map(String.init) ?? "") : ""
+        return (first + last).uppercased()
     }
 }
 
 #Preview {
-    StudentsListView()
+    NavigationStack {
+        StudentsListView()
+    }
 }

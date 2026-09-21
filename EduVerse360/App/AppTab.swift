@@ -70,7 +70,7 @@ enum AppTab: String, Hashable {
         case .schoolAdmin, .superAdmin:
             return [.home, .work, .students, .classes, .teachers, .settings]
         case .teacher:
-            return [.home, .work, .classes, .students, .settings]
+            return [.home, .work, .classes, .settings]
         case .student:
             return [.home, .classes, .settings]
         }
