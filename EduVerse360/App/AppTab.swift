@@ -43,12 +43,7 @@ enum AppTab: String, Hashable {
         case .home:
             HomeView()
         case .work:
-            switch role {
-            case .teacher, .student:
-                AllTeacherAssignmentView()
-            case .schoolAdmin, .superAdmin:
-                AdminWorkView()
-            }
+            AllTeacherAssignmentView()
         case .classes:
             switch role {
             case .teacher, .student:

@@ -36,20 +36,13 @@ Role-gate the existing shared views (no duplicate student-only screens). Views r
 - `tabs(for:)`:
   - student: `[.home, .work, .classes, .settings]`
   - teacher: `[.home, .work, .classes, .settings]` (unchanged)
-  - admins: `[.home, .work, .students, .classes, .teachers, .settings]` (unchanged — the admin Work tab now covers online classes too, so no extra tab is needed)
+  - admins: `[.home, .work, .students, .classes, .teachers, .settings]` (unchanged)
 - `rootView(role:)`:
-  - `.work`: teacher → `AllTeacherAssignmentView()` (own items); student → same view read-only; admins → `AdminWorkView()` (see below). `TeacherOnlyView` is removed.
+  - `.work`: `AllTeacherAssignmentView()` for **all** roles — teacher sees own items, student read-only, admins unfiltered. `TeacherOnlyView` is removed.
   - `.classes`: teacher/student → `ListOnlineClassView()` (teacher filtered, student read-only); admins → `AllClassesView()` (unchanged).
 - Delete `Features/Teacher/View/TeacherOnlyView.swift` and its references.
 
-### 1a. Admin Work tab — `AdminWorkView` (new)
-
-Admins see **all teacher work in one tab**: every teacher's assignments and every teacher's online classes, unfiltered.
-
-- New view `AdminWorkView` (in `Features/Authentication/View/` next to `HomeView`, or under `Features/Assignment/` — decide at implementation; it combines two features, so `App/` is also acceptable).
-- A segmented `Picker` at the top switches between two segments: **Assignments** and **Online Classes**.
-- The segments embed the existing `AllTeacherAssignmentView()` and `ListOnlineClassView()` unfiltered (both already hide nothing from admin roles), so admins keep full create/update/delete on both.
-- Navigation works as today: each embedded view pushes its detail routes onto the tab's `NavigationPath` via `TabRouter`.
+> **Revision (2026-09-22, post-implementation):** an earlier version of this spec gave admins a segmented `AdminWorkView` (Assignments + Online Classes) in the Work tab. The user then decided the Work tab should show **assignments only** for every role, so `AdminWorkView` was removed. Note the consequence: admins currently have no screen listing all online classes (their Classes tab shows school classes); admins see upcoming online classes on the Dashboard instead.
 
 ### 2. Assignment list — `AllTeacherAssignmentView`
 
