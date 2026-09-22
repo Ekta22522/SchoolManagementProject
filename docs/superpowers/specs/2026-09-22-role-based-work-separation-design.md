@@ -9,7 +9,7 @@ Separate what each role can see and do in EduVerse360:
 
 - **Teacher**: sees only their own assignments and online classes; can create, update, and delete them; sees the lists.
 - **Student**: sees assignments and online classes read-only (list + detail, including assignment PDFs). No create/update/delete anywhere.
-- **School admin / super admin**: see all teachers' assignments and online classes (unfiltered) and can manage them (full CRUD), plus the existing school-classes, students, teachers tabs.
+- **School admin / super admin**: authorized everywhere and see everything — every screen, button, tab, and route is available to them with no role gating applied. They see all teachers' assignments and online classes (unfiltered) and can manage them (full CRUD), plus the existing school-classes, students, teachers tabs.
 
 ## Context (current state)
 
@@ -26,6 +26,8 @@ Separate what each role can see and do in EduVerse360:
 ## Approach
 
 Role-gate the existing shared views (no duplicate student-only screens). Views read `UserSession.activeRole` from the environment — the same pattern `TeacherAssignmentByIdView` already uses. Navigation is gated at the button level (a student has no create/update/delete buttons, so they can't reach those routes); real authorization must also be enforced by the backend, which is out of scope for this change.
+
+**Gating rule:** the only role that is ever restricted is `.student`. Every gate is written as `session.activeRole == .student` (hide) or `!= .student` (show), so `.teacher`, `.schoolAdmin`, and `.superAdmin` always pass. Admins are additionally never filtered — they always see the full, unfiltered lists.
 
 ## Design
 
@@ -88,7 +90,7 @@ No test targets exist in the repo (see AGENTS.md). Verification:
 2. Manual pass against the local backend (`http://localhost:3000`), logging in once per role:
    - teacher: sees only own assignments/online classes; create/update/delete work.
    - student: sees both lists and details (incl. PDF); no `+`, Update, or Delete anywhere.
-   - school admin and super admin: see all items, full manage, plus the new Online Classes tab.
+   - school admin and super admin: see all items unfiltered, full manage, plus the new Online Classes tab — no button or tab is ever hidden from admin roles.
 
 ## Out of scope
 
