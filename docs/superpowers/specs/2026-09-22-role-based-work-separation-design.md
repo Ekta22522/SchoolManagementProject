@@ -33,16 +33,23 @@ Role-gate the existing shared views (no duplicate student-only screens). Views r
 
 ### 1. Tabs (`App/AppTab.swift`)
 
-- Add `case onlineClasses` to `AppTab` (title "Online Classes", icon `video`).
 - `tabs(for:)`:
   - student: `[.home, .work, .classes, .settings]`
   - teacher: `[.home, .work, .classes, .settings]` (unchanged)
-  - admins: `[.home, .work, .students, .classes, .onlineClasses, .teachers, .settings]`
+  - admins: `[.home, .work, .students, .classes, .teachers, .settings]` (unchanged — the admin Work tab now covers online classes too, so no extra tab is needed)
 - `rootView(role:)`:
-  - `.work`: teacher → `AllTeacherAssignmentView()` (own items); student → same view read-only; admins → same view unfiltered. `TeacherOnlyView` is removed.
+  - `.work`: teacher → `AllTeacherAssignmentView()` (own items); student → same view read-only; admins → `AdminWorkView()` (see below). `TeacherOnlyView` is removed.
   - `.classes`: teacher/student → `ListOnlineClassView()` (teacher filtered, student read-only); admins → `AllClassesView()` (unchanged).
-  - `.onlineClasses`: `ListOnlineClassView()` unfiltered (admins only).
 - Delete `Features/Teacher/View/TeacherOnlyView.swift` and its references.
+
+### 1a. Admin Work tab — `AdminWorkView` (new)
+
+Admins see **all teacher work in one tab**: every teacher's assignments and every teacher's online classes, unfiltered.
+
+- New view `AdminWorkView` (in `Features/Authentication/View/` next to `HomeView`, or under `Features/Assignment/` — decide at implementation; it combines two features, so `App/` is also acceptable).
+- A segmented `Picker` at the top switches between two segments: **Assignments** and **Online Classes**.
+- The segments embed the existing `AllTeacherAssignmentView()` and `ListOnlineClassView()` unfiltered (both already hide nothing from admin roles), so admins keep full create/update/delete on both.
+- Navigation works as today: each embedded view pushes its detail routes onto the tab's `NavigationPath` via `TabRouter`.
 
 ### 2. Assignment list — `AllTeacherAssignmentView`
 
@@ -90,7 +97,7 @@ No test targets exist in the repo (see AGENTS.md). Verification:
 2. Manual pass against the local backend (`http://localhost:3000`), logging in once per role:
    - teacher: sees only own assignments/online classes; create/update/delete work.
    - student: sees both lists and details (incl. PDF); no `+`, Update, or Delete anywhere.
-   - school admin and super admin: see all items unfiltered, full manage, plus the new Online Classes tab — no button or tab is ever hidden from admin roles.
+   - school admin and super admin: Work tab shows all teachers' assignments and online classes via the segmented control, full manage on both — no button or tab is ever hidden from admin roles.
 
 ## Out of scope
 
