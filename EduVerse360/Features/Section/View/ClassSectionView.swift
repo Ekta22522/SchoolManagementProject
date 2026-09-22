@@ -1,5 +1,5 @@
 //
-//  SectionByIdView.swift
+//  ClassSectionView.swift
 //  EduVerse360
 //
 //  Created by Ekta Rai on 22/08/2026.
@@ -7,46 +7,156 @@
 
 import SwiftUI
 
+private struct ClassSectionCardRow: View {
+
+    let title: String
+    let subtitle: String
+    let action: () -> Void
+
+    var body: some View {
+
+        Button {
+            action()
+        } label: {
+            HStack(spacing: 12) {
+
+                VStack(alignment: .leading, spacing: 6) {
+
+                    Text(title)
+                        .font(.headline)
+                        .fontWeight(.bold)
+                        .foregroundStyle(Color.primary)
+
+                    Text(subtitle)
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
+                        .lineLimit(2)
+                }
+
+                Spacer()
+
+                Image(systemName: "chevron.right")
+                    .font(.footnote)
+                    .foregroundStyle(.tertiary)
+            }
+            .padding(18)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .background(Color.white)
+            .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
+            .overlay(
+                RoundedRectangle(cornerRadius: 16, style: .continuous)
+                    .stroke(Color.gray.opacity(0.15), lineWidth: 1)
+            )
+            .shadow(color: .black.opacity(0.08), radius: 8, x: 0, y: 3)
+        }
+        .buttonStyle(.plain)
+
+    }
+}
+
 struct ClassSectionView: View {
     let classId : String
-   
+
     @State var viewModel = ClassSectionViewModel()
+    @Environment(TabRouter.self) private var router
+
     var body: some View {
-        VStack(spacing:10){
-            VStack{
-                if let classRoom = viewModel.classRoom{
-                    VStack{
-                        Text(" Class id:\(classRoom.id)")
-                        Text("Class Name:\(classRoom.className)")
-                        Text("Description:\(classRoom.description)")
-                        Text("Created At:\(classRoom.createdAt)")
-                        Text("Updated At:\(classRoom.updatedAt)")
-                    }
-                }
-            }
-            if let sections = viewModel.section{
-                List(sections){section in
-                    VStack{
-                        Text("Id:\(section.id)")
-                        Text("Class Id:\(section.classId)")
-                        Text("Section Name:\(section.sectionName)")
-                        Text("Class Teacher:\(section.classTeacher)")
-                        Text("Capacity:\(section.capacity)")
-                        Text("created At:\(section.createdAt)")
-                        if let className = section.className{
-                            Text("Class Name:\(className)")
+        ZStack {
+            Color.pageBackground
+                .ignoresSafeArea()
+
+            VStack(spacing: 0) {
+
+                // MARK: Header
+
+                HStack {
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text("Sections")
+                            .font(.largeTitle)
+                            .fontWeight(.bold)
+
+                        if let classRoom = viewModel.classRoom {
+                            Text(classRoom.className)
+                                .font(.subheadline)
+                                .foregroundStyle(Color.tertiaryText)
                         }
                     }
+
+                    Spacer()
+                }
+                .padding(.horizontal)
+                .padding(.top, 10)
+                .padding(.bottom, 15)
+
+                // MARK: Content
+
+                if let errorMessage = viewModel.errorMessage, viewModel.section == nil {
+
+                    Text(errorMessage)
+                        .foregroundStyle(Color.secondaryText)
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+
+                } else if let sections = viewModel.section {
+
+                    if sections.isEmpty {
+
+                        VStack(spacing: 12) {
+                            Image(systemName: "rectangle.split.3x1")
+                                .font(.system(size: 40))
+                                .foregroundStyle(.secondary)
+
+                            Text("No sections yet")
+                                .font(.headline)
+                                .fontWeight(.semibold)
+
+                            Text("This class has no sections.")
+                                .font(.subheadline)
+                                .foregroundStyle(.secondary)
+                                .multilineTextAlignment(.center)
+                        }
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+                        .padding(.horizontal, 30)
+
+                    } else {
+
+                        ScrollView {
+                            LazyVStack(spacing: 15) {
+                                ForEach(sections) { section in
+                                    ClassSectionCardRow(
+                                        title: section.sectionName,
+                                        subtitle: subtitle(for: section),
+                                        action: {
+                                            router.push(SectionRoute.detail(id: section.id))
+                                        }
+                                    )
+                                }
+                            }
+                            .padding(.horizontal)
+                        }
+                    }
+
+                } else {
+
+                    ProgressView()
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+
                 }
             }
         }
         .task {
             await viewModel.classSection(id: classId)
         }
-        
+    }
+
+    private func subtitle(for section: Section) -> String {
+        var parts: [String] = []
+        parts.append("Teacher: \(section.classTeacher)")
+        parts.append("Capacity: \(section.capacity)")
+        return parts.joined(separator: " · ")
     }
 }
 
 #Preview {
     ClassSectionView(classId: "")
+        .environment(TabRouter())
 }

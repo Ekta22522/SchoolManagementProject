@@ -10,60 +10,80 @@ import SwiftUI
 struct VerifyRegistrationView: View {
     @Environment(AuthRouter.self) private var router
     @State private var viewModel = VerifyRegistrationViewModel()
-    
+    @FocusState private var focusedField: Field?
+
     init(email: String) {
           let viewModel = VerifyRegistrationViewModel()
           viewModel.email = email
 
           _viewModel = State(initialValue: viewModel)
       }
-    
+
     var body: some View {
-        ZStack{
-            RoundedRectangle(cornerRadius: 20)
-                .fill(Color.white)
-                .frame(maxWidth:350,maxHeight:350)
-                .shadow(radius: 10)
-            VStack{
+        ZStack {
+            Color.pageBackground
+                .ignoresSafeArea()
+
+            VStack(spacing: 24) {
                 Text("Verify Your OTP")
                     .font(.largeTitle)
                     .foregroundColor(Color.primary)
                     .fontWeight(.bold)
-                
-                HStack(){
-                    SecureField("Enter Your OTP",text: $viewModel.otp)
-                }
-                .padding()
-                .frame(width:300, height:45)
-                .overlay(
-                    RoundedRectangle(cornerRadius: 10)
-                        .stroke(Color.green, lineWidth: 4)
-                    
-                )
-                
-                Button(action:{
-                    Task{
-                        print("Email:", viewModel.email)
-                        print("OTP:", viewModel.otp)
-                        await viewModel.verifyRegister()
-                    }
-                }
-                       ,label:{
-                    Text ("Ok")
-                        .foregroundColor(Color.white)
-                        .font(.headline)
-                        .fontWeight(.semibold)
-                    
-                    
-                })
-                
-                .frame(maxWidth: 80, maxHeight: 30)
-                .padding()
-                .background(Color.primary)
-                .cornerRadius(10)
-                .padding()
-                
+
+                Text("Enter the verification code sent to your email.")
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+                    .multilineTextAlignment(.center)
+
+                RoundedRectangle(cornerRadius: 16)
+                    .fill(Color.white)
+                    .shadow(color: .black.opacity(0.1), radius: 8, x: 0, y: 4)
+                    .overlay(
+                        VStack(spacing: 16) {
+                            AppTextField(
+                                title: "OTP",
+                                imageName: "",
+                                placeholder: "Enter Your OTP",
+                                field: .otp,
+                                error: nil,
+                                text: $viewModel.otp,
+                                focusedField: $focusedField
+                            )
+
+                            if let errorMessage = viewModel.errorMessage {
+                                Text(errorMessage)
+                                    .font(.caption)
+                                    .foregroundColor(.red)
+                                    .multilineTextAlignment(.center)
+                                    .fixedSize(horizontal: false, vertical: true)
+                            }
+
+                            Button(action: {
+                                Task {
+                                    print("Email:", viewModel.email)
+                                    print("OTP:", viewModel.otp)
+                                    await viewModel.verifyRegister()
+                                }
+                            }, label: {
+                                if viewModel.isLoading {
+                                    ProgressView()
+                                        .tint(.white)
+                                } else {
+                                    Text("Ok")
+                                        .foregroundColor(Color.white)
+                                        .font(.headline)
+                                        .fontWeight(.semibold)
+                                }
+                            })
+                            .frame(maxWidth: .infinity)
+                            .padding(.vertical, 16)
+                            .background(Color.primary)
+                            .clipShape(RoundedRectangle(cornerRadius: 12))
+                        }
+                        .padding(16)
+                    )
             }
+            .padding(.horizontal, 16)
         }
         .alert(
             "Verified",

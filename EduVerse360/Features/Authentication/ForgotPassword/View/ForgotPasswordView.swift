@@ -52,7 +52,15 @@ struct ForgotPasswordView: View {
                              error: viewModel.emailError,
                              text: $viewModel.email,
                              focusedField: $focusedField)
-                
+
+                if let errorMessage = viewModel.errorMessage {
+                    Text(errorMessage)
+                        .font(.caption)
+                        .foregroundColor(.red)
+                        .multilineTextAlignment(.center)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
+
                 Button(action:{
                     Task{
                         await viewModel.forgotPassword()
@@ -62,22 +70,23 @@ struct ForgotPasswordView: View {
                     }
                 },
                        label: {
-                    HStack(spacing:nil){
-                        Text("Send otp")
-                            .foregroundColor(Color.white)
-                            .fontWeight(.semibold)
-                            .padding()
-                        Image("sideArrow")
+                    if viewModel.isLoading {
+                        ProgressView()
+                            .tint(.white)
+                    } else {
+                        HStack(spacing:nil){
+                            Text("Send otp")
+                                .foregroundColor(Color.white)
+                                .fontWeight(.semibold)
+                                .padding()
+                            Image("sideArrow")
+                        }
                     }
-                    
+
                 })
                 .frame(maxWidth:300, maxHeight: 45 )
-                .background(
-                    LinearGradient(
-                        colors: [.primary,.greenColor], startPoint: .topLeading, endPoint: .bottomTrailing
-                    )
-                    .cornerRadius(10)
-                )
+                .background(Color.primary)
+                .cornerRadius(10)
             }
             .padding()
             

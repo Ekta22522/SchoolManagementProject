@@ -18,7 +18,6 @@ Guidance for AI coding agents working in this repository. Everything below was v
 ```
 EduVerse360/
 ├── EduVerse360App.swift   # @main entry point: StartView auth gate + AuthStackView + environment injection
-├── ContentView.swift      # sample/starter view, not the real root
 ├── App/                   # app-wide plumbing
 │   ├── AuthRouter.swift   # @Observable AuthRouter (logged-out NavigationPath, push/pop/popToRoot)
 │   ├── TabRouter.swift    # @Observable TabRouter (per-AppTab paths, push/pop/popToRoot/reset)

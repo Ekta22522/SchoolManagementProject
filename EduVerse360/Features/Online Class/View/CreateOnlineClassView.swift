@@ -16,6 +16,10 @@ struct CreateOnlineClassView: View {
 
     @State private var viewModel = CreateOnlineClassViewModel()
 
+    // API-driven options for the Class and Section menus, fetched on appear.
+    @State private var allClassesViewModel = AllClassesViewModel()
+    @State private var listSectionViewModel = ListSectionViewModel()
+
     var body: some View {
 
         ZStack {
@@ -83,36 +87,10 @@ struct CreateOnlineClassView: View {
 
                         Menu {
 
-                            Button("Grade 1") {
-                                viewModel.className = "Grade 1"
-                            }
-
-                            Button("Grade 2") {
-                                viewModel.className = "Grade 2"
-                            }
-
-                            Button("Grade 3") {
-                                viewModel.className = "Grade 3"
-                            }
-
-                            Button("Grade 4") {
-                                viewModel.className = "Grade 4"
-                            }
-
-                            Button("Grade 5") {
-                                viewModel.className = "Grade 5"
-                            }
-
-                            Button("Grade 6") {
-                                viewModel.className = "Grade 6"
-                            }
-
-                            Button("Grade 7") {
-                                viewModel.className = "Grade 7"
-                            }
-
-                            Button("Grade 8") {
-                                viewModel.className = "Grade 8"
+                            ForEach(allClassesViewModel.classes) { classItem in
+                                Button(classItem.className) {
+                                    viewModel.className = classItem.className
+                                }
                             }
 
                         } label: {
@@ -167,20 +145,10 @@ struct CreateOnlineClassView: View {
 
                         Menu {
 
-                            Button("Sec A") {
-                                viewModel.section = "Sec A"
-                            }
-
-                            Button("Sec B") {
-                                viewModel.section = "Sec B"
-                            }
-
-                            Button("Sec C") {
-                                viewModel.section = "Sec C"
-                            }
-
-                            Button("Sec D") {
-                                viewModel.section = "Sec D"
+                            ForEach(listSectionViewModel.listSection ?? []) { sectionItem in
+                                Button(sectionItem.sectionName) {
+                                    viewModel.section = sectionItem.sectionName
+                                }
                             }
 
                         } label: {
@@ -228,71 +196,16 @@ struct CreateOnlineClassView: View {
 
                         // MARK: - Subject
 
-                        Text("Subject")
-                            .font(.caption)
-                            .padding(.top, 10)
-                            .padding(.bottom, 6)
-
-                        Menu {
-
-                            Button("Science") {
-                                viewModel.subject = "Science"
-                            }
-
-                            Button("Math") {
-                                viewModel.subject = "Math"
-                            }
-
-                            Button("Social Studies") {
-                                viewModel.subject = "Social Studies"
-                            }
-
-                            Button("English") {
-                                viewModel.subject = "English"
-                            }
-
-                        } label: {
-
-                            HStack {
-
-                                Text(
-                                    viewModel.subject.isEmpty
-                                    ? "Select your Subject"
-                                    : viewModel.subject
-                                )
-                                .foregroundColor(
-                                    viewModel.subject.isEmpty
-                                    ? .secondary
-                                    : .primary
-                                )
-
-                                Spacer()
-
-                                Image("dropdown")
-                            }
-                            .padding(.horizontal, 12)
-                            .frame(
-                                maxWidth: .infinity,
-                                minHeight: 45
-                            )
-                            .overlay(
-                                RoundedRectangle(cornerRadius: 10)
-                                    .stroke(
-                                        Color.textFieldColor,
-                                        lineWidth: 1
-                                    )
-                            )
-                        }
-
-                        // Subject Error
-
-                        if let error = viewModel.subjectError {
-
-                            Text(error)
-                                .font(.caption)
-                                .foregroundColor(.red)
-                                .padding(.top, 4)
-                        }
+                        AppTextField(
+                            title: "Subject",
+                            imageName: "",
+                            placeholder: "Enter your subject",
+                            field: .subject,
+                            error: viewModel.subjectError,
+                            text: $viewModel.subject,
+                            focusedField: $focusedField
+                        )
+                        .padding(.top, 5)
 
                         // MARK: - Description
 
@@ -481,14 +394,6 @@ struct CreateOnlineClassView: View {
                         .disabled(viewModel.isLoading)
                         .padding(.top, 20)
                         .padding(.bottom, 30)
-                        if let error = viewModel.errorMessage {
-
-                            Text(error)
-                                .font(.caption)
-                                .foregroundColor(.red)
-                                .padding(.top, 4)
-                        }
-
 
                         Spacer()
                     }
@@ -511,6 +416,10 @@ struct CreateOnlineClassView: View {
             }
             .ignoresSafeArea(edges: .bottom)
         }
+        .task {
+            await allClassesViewModel.getAllClasses()
+            await listSectionViewModel.getAllSection()
+        }
         .alert(
             "Success",
             isPresented: $viewModel.isOnlineClassSuccess
@@ -527,4 +436,3 @@ struct CreateOnlineClassView: View {
 #Preview {
     CreateOnlineClassView()
 }
-

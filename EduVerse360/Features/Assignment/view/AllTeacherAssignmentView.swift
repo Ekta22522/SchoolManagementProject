@@ -59,7 +59,7 @@ struct AllTeacherAssignmentView: View {
                     .padding(.horizontal,16)
                     .padding(.vertical,8)
                     .background(
-                        viewModel.selectedFilter == .all ? .black : .white
+                        viewModel.selectedFilter == .all ? Color.primary : .white
                     )
                     .clipShape(Capsule())
                     
@@ -74,7 +74,7 @@ struct AllTeacherAssignmentView: View {
                     .padding(.horizontal,16)
                     .padding(.vertical,8)
                     .background(
-                        viewModel.selectedFilter == .published ? .black : .white
+                        viewModel.selectedFilter == .published ? Color.primary : .white
                     )
                     .clipShape(Capsule())
                     
@@ -88,7 +88,7 @@ struct AllTeacherAssignmentView: View {
                     .padding(.horizontal,16)
                     .padding(.vertical,8)
                     .background(
-                        viewModel.selectedFilter == .pending ? .black : .white
+                        viewModel.selectedFilter == .pending ? Color.primary : .white
                     )
                     .clipShape(Capsule())
                     
@@ -98,21 +98,42 @@ struct AllTeacherAssignmentView: View {
                 .padding()
                 
                 // MARK: Main Card List
-                ScrollView{
-                    LazyVStack(spacing: 16) {
-                           
-                        ForEach (viewModel.filteredAssignments){assignment in
-                    AssignmentCard(assignment: assignment,
-                                   viewPdfAction: {
-                        viewModel.showAssignmentPdf = true
-                        print("View PDF: \(assignment.title)")
-                    })
-                    .onTapGesture {
-                        router.push(AssignmentRoute.detail(id: assignment.id))
+                if viewModel.isLoading && viewModel.filteredAssignments.isEmpty {
+                    // MARK: Loading State
+                    ProgressView()
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+                } else if viewModel.filteredAssignments.isEmpty {
+                    // MARK: Empty State
+                    VStack(spacing: 12) {
+                        Image(systemName: "tray")
+                            .font(.system(size: 50))
+                            .foregroundStyle(.secondary)
+                        Text("No assignments yet")
+                            .font(.headline)
+                            .fontWeight(.semibold)
+                        Text(isStudent ? "No assignments available." : "Tap + to create your first assignment.")
+                            .font(.subheadline)
+                            .foregroundStyle(.secondary)
+                            .multilineTextAlignment(.center)
                     }
-                            
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                } else {
+                    ScrollView{
+                        LazyVStack(spacing: 16) {
+
+                            ForEach (viewModel.filteredAssignments){assignment in
+                        AssignmentCard(assignment: assignment,
+                                       viewPdfAction: {
+                            viewModel.showAssignmentPdf = true
+                            print("View PDF: \(assignment.title)")
+                        })
+                        .onTapGesture {
+                            router.push(AssignmentRoute.detail(id: assignment.id))
                         }
-                        }
+
+                            }
+                            }
+                    }
                 }
                 
          

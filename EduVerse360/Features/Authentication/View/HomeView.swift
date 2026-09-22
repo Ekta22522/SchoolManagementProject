@@ -15,161 +15,102 @@ struct HomeView: View {
         case .schoolAdmin, .superAdmin, .teacher:
             DashboardView()
         case .student:
-            MarketingHomeView()
+            StudentHomeView()
         }
     }
 }
 
-private struct MarketingHomeView: View {
-
+private struct StudentHomeView: View {
+    @Environment(UserSession.self) private var session
+    @Environment(TabRouter.self) private var router
 
     var body: some View {
-     
-        ScrollView{
-            ZStack(){
-                Rectangle()
-                    .fill(Color.primary)
-                    .ignoresSafeArea()
-                
-                VStack(){
-                    //logo part
-                    VStack{
-                        VStack(spacing:10) {
-                            Text("EduVerse 360")
-                                .foregroundColor(Color.white)
-                                .font(.title)
-                                .fontWeight(.semibold)
-                            
-                            Text("Join EduVerse 360")
-                                .foregroundColor(Color.white)
-                                .font(.largeTitle)
-                                .fontWeight(.bold)
-                        }
-                        .padding()
-                        
-                        //Description
-                        VStack(alignment:.center){
-                            Text("The Complete Smart School Management Platform.Empowering educators, students, and parentsthrough the power of AI.")
-                        }
-                        .multilineTextAlignment(.center)
-                        .foregroundColor(.homesecondarytext)
-                        .padding(.horizontal)
-                        
-                        //Image
-                        Image("home")
-                            .resizable()
-                            .scaledToFit()
-                            .frame(maxWidth: 330)
-                            .padding(.vertical)
-                        
-                        //Total Users
-                        
-                        HStack(spacing:20){
-                            VStack(){
-                                Text("500+")
-                                    .foregroundColor(Color.white)
-                                    .font(.title2)
-                                    .fontWeight(.semibold)
-                                Text("Institutions")
-                                    .foregroundColor(.homesecondarytext)
-                                    .font(.caption)
-                            }
-                            VStack(){
-                                Text("50K+")
-                                    .foregroundColor(Color.white)
-                                    .font(.title2)
-                                    .fontWeight(.semibold)
-                                Text("Active Users")
-                                    .foregroundColor(.homesecondarytext)
-                                    .font(.caption)
-                            }
-                            
-                            VStack(){
-                                Text("99.9%")
-                                    .foregroundColor(Color.white)
-                                    .font(.title2)
-                                    .fontWeight(.semibold)
-                                Text("Uptime")
-                                    .foregroundColor(.homesecondarytext)
-                                    .font(.caption)
-                            }
-                        }
-                        .padding()
-                    }
-                    .padding()
+        ScrollView {
+            VStack(alignment: .leading, spacing: 16) {
+                VStack(alignment: .leading, spacing: 4) {
+                    Text("Home")
+                        .font(.largeTitle)
+                        .fontWeight(.bold)
+                    Text("Welcome back, \(session.user?.username ?? "")")
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
                 }
-            } .padding(.bottom)
-                .background(Color.primary)
-            
-            
-            //Join Now Button
-            Button( action: {}, label: {
-                Text("Join EduVerse 360")
-                    .underline()
-                    .font(.title2)
-                    .fontWeight(.bold)
-                    .foregroundColor(.white)
-                    .frame(maxWidth:300,maxHeight: 40)
-                    .padding(.horizontal, 30)
-                    .padding(.vertical)
-                    .background(Color.primary)
-                    .cornerRadius(20)
-                
-                
+                .padding(.bottom, 8)
+
+                HomeCard(
+                    icon: "text.document",
+                    title: "My Assignments",
+                    subtitle: "View your assignments"
+                ) {
+                    router.selection = .work
+                }
+
+                HomeCard(
+                    icon: "video",
+                    title: "Online Classes",
+                    subtitle: "Join your online classes"
+                ) {
+                    router.selection = .classes
+                }
+
+                Spacer()
             }
-            )
-            .padding(.top)
-            
-            
-            Button( action: {
-              
-            }, label: {
-                Text("Sign In")
-                    .underline()
-                    .font(.title2)
-                    .fontWeight(.bold)
-                    .foregroundColor(.black)
-                    .frame(maxWidth:300,maxHeight: 40)
-                    .padding(.horizontal, 30)
-                    .padding(.vertical)
-                    .background(
-                        RoundedRectangle(cornerRadius: 20)
-                            .stroke(Color.textFieldColor, lineWidth: 1)
-                            .shadow(radius: 20)
-                    )
-                    .cornerRadius(10)
-                
-                
-                
-            }
-            )
             .padding()
-            
-            
-            RoundedRectangle(cornerRadius: 50)
-                .fill(Color.primary)
-                .frame(width:40,height:5)
-                .padding()
-            
-            Text("ENTERPRISE EDITION")
-                .font(.footnote)
-                .foregroundColor(Color.secondaryText)
-            
-            
-            
-            
-           Spacer()
-            
         }
-       
-         
-        
-    
-        
+        .background(Color.pageBackground.ignoresSafeArea())
+    }
+}
+
+private struct HomeCard: View {
+    let icon: String
+    let title: String
+    let subtitle: String
+    let action: () -> Void
+
+    var body: some View {
+        Button(action: action) {
+            HStack(spacing: 16) {
+                Image(systemName: icon)
+                    .font(.title3)
+                    .foregroundStyle(.primary)
+                    .frame(width: 44, height: 44)
+                    .background(Color.primary.opacity(0.1))
+                    .clipShape(RoundedRectangle(cornerRadius: 10))
+
+                VStack(alignment: .leading, spacing: 2) {
+                    Text(title)
+                        .font(.headline)
+                        .fontWeight(.bold)
+                        .foregroundStyle(.primary)
+                    Text(subtitle)
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
+                }
+
+                Spacer()
+
+                Image(systemName: "chevron.right")
+                    .font(.footnote)
+                    .fontWeight(.semibold)
+                    .foregroundStyle(.tertiary)
+            }
+            .padding()
+            .background(
+                RoundedRectangle(cornerRadius: 16)
+                    .fill(Color.white)
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 16)
+                            .stroke(Color.gray.opacity(0.15), lineWidth: 1)
+                    )
+                    .shadow(color: Color.black.opacity(0.08), radius: 8)
+            )
+        }
+        .buttonStyle(.plain)
     }
 }
 
 #Preview {
     HomeView()
         .environment(UserSession())
+        .environment(TabRouter())
 }

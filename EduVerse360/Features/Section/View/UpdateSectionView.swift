@@ -13,48 +13,84 @@ struct UpdateSectionView: View {
     @Environment(TabRouter.self) private var router
     @FocusState private var focusedField : Field?
     var body: some View {
-        VStack{
-            if let section = viewModel.section{
-                VStack{
-                    Text("hello world")
-                    Text("SectionID: \(section.id)")
-                    Text("ClassID: \(section.classId)")
-                    AppTextField(title:"Section Name",
-                                 imageName: "",
-                                 placeholder: "Enter your Section",
-                                 field:.description,
-                                 error:viewModel.classNameError,
-                                 text:$viewModel.sectionName,
-                                 focusedField: $focusedField
-                    )
-                    
-                    AppTextField(title:"Class Teacher",
-                                 imageName: "",
-                                 placeholder: "Enter your teacher name",
-                                 field:.description,
-                                 error:viewModel.classNameError,
-                                 text:$viewModel.classTeacher,
-                                 focusedField: $focusedField
-                    )
-                  
-                    Button(
-                        action:{
-                            Task{
-                                await viewModel.updateSection(id: sectionId)
-                            }
-                        },label:{
-                            Text("Update")
-                                .foregroundColor(Color.white)
+        ZStack {
+            Color.pageBackground
+                .ignoresSafeArea()
+
+            if let errorMessage = viewModel.errorMessage, viewModel.section == nil {
+                Text(errorMessage)
+                    .foregroundStyle(Color.secondaryText)
+            } else if viewModel.section != nil {
+                ScrollView {
+                    VStack(alignment: .leading, spacing: 16) {
+
+                        // MARK: Header
+
+                        Text("Update Section")
+                            .font(.largeTitle)
+                            .fontWeight(.bold)
+
+                        // MARK: Form
+
+                        VStack(spacing: 4) {
+                            AppTextField(title:"Section Name",
+                                         imageName: "",
+                                         placeholder: "Enter your Section",
+                                         field:.description,
+                                         error:viewModel.classNameError,
+                                         text:$viewModel.sectionName,
+                                         focusedField: $focusedField
+                            )
+
+                            AppTextField(title:"Class Teacher",
+                                         imageName: "",
+                                         placeholder: "Enter your teacher name",
+                                         field:.description,
+                                         error:viewModel.classNameError,
+                                         text:$viewModel.classTeacher,
+                                         focusedField: $focusedField
+                            )
                         }
-                    )
-                    .frame(maxWidth:120,maxHeight: 50)
-                    .background(Color.primary)
-                    .cornerRadius(10)
-                    
+                        .padding()
+                        .frame(maxWidth: .infinity)
+                        .background(Color.white)
+                        .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 16, style: .continuous)
+                                .stroke(Color.gray.opacity(0.15), lineWidth: 1)
+                        )
+                        .shadow(color: .black.opacity(0.08), radius: 8, x: 0, y: 3)
+
+                        // MARK: Submit
+
+                        Button(
+                            action:{
+                                Task{
+                                    await viewModel.updateSection(id: sectionId)
+                                }
+                            },label:{
+                                Group {
+                                    if viewModel.isLoading {
+                                        ProgressView()
+                                            .tint(.white)
+                                    } else {
+                                        Text("Update")
+                                    }
+                                }
+                                .foregroundStyle(Color.white)
+                                .frame(maxWidth: .infinity)
+                                .padding(.vertical, 16)
+                                .background(Color.primary)
+                                .clipShape(RoundedRectangle(cornerRadius: 12))
+                            }
+                        )
+                        .disabled(viewModel.isLoading)
+                    }
+                    .padding()
                 }
+            } else {
+                ProgressView()
             }
-            
-            
         }
         .alert(
             "Success",
@@ -74,4 +110,5 @@ struct UpdateSectionView: View {
 
 #Preview {
     UpdateSectionView(sectionId: 0)
+        .environment(TabRouter())
 }

@@ -176,9 +176,14 @@ struct ListOnlineClassView: View {
                             }
                            
 
-                        } else {
+                        } else if viewModel.isLoading && viewModel.onlineClass == nil {
 
-                            // MARK: - Empty State
+                            // MARK: - Loading State
+                            ProgressView()
+                                .frame(maxWidth: .infinity)
+                                .padding(.top, 80)
+
+                        } else {
                             VStack(spacing: 12) {
 
                                 Image(systemName: "video.slash")

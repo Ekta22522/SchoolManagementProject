@@ -8,73 +8,98 @@
 import SwiftUI
 import Foundation
 struct VerifyOtpView: View {
-    
+
     @State var viewModel = VerifyOtpViewModel()
     @FocusState private var focusedField : Field?
     @Environment(AuthRouter.self) private var router
-    
+
     init(email: String) {
           let viewModel = VerifyOtpViewModel()
           viewModel.email = email
         _viewModel = State(initialValue: viewModel)
       }
     var body: some View {
-        VStack {
-            Spacer()
-                .frame(height: 80)
+        ZStack {
+            Color.pageBackground
+                .ignoresSafeArea()
 
-            Text("Verify Your OTP")
-                .font(.largeTitle)
-                .fontWeight(.bold)
+            VStack(spacing: 24) {
+                Spacer()
+                    .frame(height: 40)
 
-            Text("Enter the verification code sent to your email.")
-                .font(.subheadline)
-                .foregroundStyle(.secondary)
-                .multilineTextAlignment(.center)
-                .padding(.bottom)
+                Text("Verify Your OTP")
+                    .font(.largeTitle)
+                    .fontWeight(.bold)
 
-            AppTextField(
-                title: "Username",
-                imageName: "",
-                placeholder: "Enter your username",
-                field: .username,
-                error: nil,
-                text: $viewModel.username,
-                focusedField: $focusedField
-            )
+                Text("Enter the verification code sent to your email.")
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+                    .multilineTextAlignment(.center)
 
-            AppTextField(
-                title: "OTP",
-                imageName: "",
-                placeholder: "Enter your OTP",
-                field: .otp,
-                error: nil,
-                text: $viewModel.otp,
-                focusedField: $focusedField
-            )
+                RoundedRectangle(cornerRadius: 16)
+                    .fill(Color.white)
+                    .shadow(color: .black.opacity(0.1), radius: 8, x: 0, y: 4)
+                    .overlay(
+                        VStack(spacing: 16) {
+                            AppTextField(
+                                title: "Username",
+                                imageName: "",
+                                placeholder: "Enter your username",
+                                field: .username,
+                                error: nil,
+                                text: $viewModel.username,
+                                focusedField: $focusedField
+                            )
 
-            Button {
-                Task {
-                    await viewModel.verifyOtp()
+                            AppTextField(
+                                title: "OTP",
+                                imageName: "",
+                                placeholder: "Enter your OTP",
+                                field: .otp,
+                                error: nil,
+                                text: $viewModel.otp,
+                                focusedField: $focusedField
+                            )
 
-                    if viewModel.isVerifyOtpSucess {
-                        router.push(AuthRoute.resetPassword(email: viewModel.email))
-                    }
-                }
-            } label: {
-                Text("Ok")
-                    .foregroundColor(.white)
-                    .font(.headline)
-                    .fontWeight(.semibold)
-                    .frame(width: 80, height: 40)
+                            if let errorMessage = viewModel.errorMessage {
+                                Text(errorMessage)
+                                    .font(.caption)
+                                    .foregroundColor(.red)
+                                    .multilineTextAlignment(.center)
+                                    .fixedSize(horizontal: false, vertical: true)
+                            }
+
+                            Button {
+                                Task {
+                                    await viewModel.verifyOtp()
+
+                                    if viewModel.isVerifyOtpSucess {
+                                        router.push(AuthRoute.resetPassword(email: viewModel.email))
+                                    }
+                                }
+                            } label: {
+                                if viewModel.isLoading {
+                                    ProgressView()
+                                        .tint(.white)
+                                } else {
+                                    Text("Ok")
+                                        .foregroundColor(.white)
+                                        .font(.headline)
+                                        .fontWeight(.semibold)
+                                }
+                            }
+                            .frame(maxWidth: .infinity)
+                            .padding(.vertical, 16)
+                            .background(Color.primary)
+                            .clipShape(RoundedRectangle(cornerRadius: 12))
+                        }
+                        .padding(16)
+                    )
+
+                Spacer()
             }
-            .background(Color.primary)
-            .cornerRadius(10)
-            .padding()
-
-            Spacer()
+            .padding(.horizontal, 16)
         }
-        .padding(.horizontal)
     }
 }
 
