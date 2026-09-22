@@ -38,7 +38,7 @@ struct VerifyOtpView: View {
                 imageName: "",
                 placeholder: "Enter your username",
                 field: .username,
-                error: viewModel.emailError,
+                error: nil,
                 text: $viewModel.username,
                 focusedField: $focusedField
             )
@@ -48,7 +48,7 @@ struct VerifyOtpView: View {
                 imageName: "",
                 placeholder: "Enter your OTP",
                 field: .otp,
-                error: viewModel.emailError,
+                error: nil,
                 text: $viewModel.otp,
                 focusedField: $focusedField
             )

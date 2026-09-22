@@ -27,7 +27,7 @@ struct ClassView: View {
                          imageName: "",
                          placeholder: "Enter Description",
                          field:.description,
-                         error: viewModel.classNameError,
+                         error: viewModel.descriptionError,
                          text:$viewModel.description,
                          focusedField: $focusedField
             )
@@ -36,9 +36,6 @@ struct ClassView: View {
                 action:{
                     Task{
                         await viewModel.classes()
-                        if viewModel.isclassSuccess{
-                            router.push(ClassRoute.list)
-                        }
                     }
                 },label:{
                     Text("Submit")
@@ -49,6 +46,16 @@ struct ClassView: View {
             .background(Color.primary)
             .cornerRadius(10)
             
+        }
+        .alert(
+            "Success",
+            isPresented: $viewModel.isclassSuccess
+        ) {
+            Button("OK", role: .cancel) {
+                router.pop()
+            }
+        } message: {
+            Text("Class created successfully.")
         }
     }
 }

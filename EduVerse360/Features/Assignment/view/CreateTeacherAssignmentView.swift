@@ -46,8 +46,15 @@ struct CreateTeacherAssignmentView: View {
             await viewModel.getAllClasses()
             await viewModel.getAllSection()
         }
-        .onChange(of: viewModel.isSuccess) { _, success in
-            if success { dismiss() }
+        .alert(
+            "Success",
+            isPresented: $viewModel.isSuccess
+        ) {
+            Button("OK", role: .cancel) {
+                dismiss()
+            }
+        } message: {
+            Text("Assignment created successfully.")
         }
         .alert(
             "Something went wrong",

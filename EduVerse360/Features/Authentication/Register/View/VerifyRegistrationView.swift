@@ -46,9 +46,6 @@ struct VerifyRegistrationView: View {
                         print("Email:", viewModel.email)
                         print("OTP:", viewModel.otp)
                         await viewModel.verifyRegister()
-                        if viewModel.isVerificationSucess{
-                            router.popToRoot()
-                        }
                     }
                 }
                        ,label:{
@@ -67,6 +64,16 @@ struct VerifyRegistrationView: View {
                 .padding()
                 
             }
+        }
+        .alert(
+            "Verified",
+            isPresented: $viewModel.isVerificationSucess
+        ) {
+            Button("OK", role: .cancel) {
+                router.popToRoot()
+            }
+        } message: {
+            Text("Your account has been verified. Please sign in.")
         }
     }
 }

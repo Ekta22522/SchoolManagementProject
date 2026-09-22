@@ -52,26 +52,23 @@ struct ResetPasswordView: View {
                 
                 AppTextField(title: "New Password",
                              imageName: "lock",
-                             placeholder: "Enter New Passowrd",
-                             field: .username,
-                             error: viewModel.emailError,
+                             placeholder: "Enter New Password",
+                             field: .password,
+                             error: nil,
                              text: $viewModel.password,
                              focusedField: $focusedField)
                 
                 AppTextField(title: "Confirm Password",
                              imageName: "lock",
-                             placeholder: "Confirm Passowrd",
-                             field: .username,
-                             error: viewModel.emailError,
+                             placeholder: "Confirm Password",
+                             field: .password,
+                             error: nil,
                              text: $viewModel.confirmPassword,
                              focusedField: $focusedField)
                 
                 Button(action:{
                     Task{
                         await viewModel.resetPassword()
-                        if viewModel.isResetPasswordSucess{
-                            router.popToRoot()
-                        }
                     }
                 },
                        label: {
@@ -102,6 +99,16 @@ struct ResetPasswordView: View {
                 }
             Spacer()
                 .padding()
+        }
+        .alert(
+            "Success",
+            isPresented: $viewModel.isResetPasswordSucess
+        ) {
+            Button("OK", role: .cancel) {
+                router.popToRoot()
+            }
+        } message: {
+            Text("Your password has been reset. Please sign in.")
         }
     }
 }

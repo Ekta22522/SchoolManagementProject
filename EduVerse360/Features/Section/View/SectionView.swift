@@ -62,6 +62,16 @@ struct SectionView: View {
        .onAppear{
            viewModel.getclassId(Id: classId)
        }
+       .alert(
+           "Success",
+           isPresented: $viewModel.isSectionSuccess
+       ) {
+           Button("OK", role: .cancel) {
+               router.pop()
+           }
+       } message: {
+           Text("Section created successfully.")
+       }
     }
 }
 

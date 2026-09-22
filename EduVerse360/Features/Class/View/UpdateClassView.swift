@@ -33,7 +33,7 @@ struct UpdateClassView: View {
                          imageName: "",
                          placeholder: "Enter Description",
                          field:.description,
-                         error: viewModel.classNameError,
+                         error: viewModel.descriptionError,
                          text:$viewModel.description,
                          focusedField: $focusedField
             )

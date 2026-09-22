@@ -10,6 +10,8 @@ import SwiftUI
 
 struct CreateOnlineClassView: View {
 
+    @Environment(TabRouter.self) private var router
+
     @FocusState private var focusedField: Field?
 
     @State private var viewModel = CreateOnlineClassViewModel()
@@ -508,6 +510,16 @@ struct CreateOnlineClassView: View {
                 }
             }
             .ignoresSafeArea(edges: .bottom)
+        }
+        .alert(
+            "Success",
+            isPresented: $viewModel.isOnlineClassSuccess
+        ) {
+            Button("OK", role: .cancel) {
+                router.pop()
+            }
+        } message: {
+            Text("Online class created successfully.")
         }
     }
 }
