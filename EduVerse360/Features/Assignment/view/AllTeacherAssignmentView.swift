@@ -3,9 +3,18 @@ import UniformTypeIdentifiers
 
 struct AllTeacherAssignmentView: View {
     @Environment(TabRouter.self) private var router
+    @Environment(UserSession.self) private var session
     
     @State private var viewModel = AllTeacherAssignmentViewModel()
     @State private var hasAppeared = false
+    
+    private var teacherFilterId: Int? {
+        session.activeRole == .teacher ? session.user?.id : nil
+    }
+    
+    private var isStudent: Bool {
+        session.activeRole == .student
+    }
     
     
     
@@ -17,23 +26,25 @@ struct AllTeacherAssignmentView: View {
                 // MARK: Headers
                 
                 HStack{
-                    Text("My assignments")
+                    Text(session.activeRole == .teacher ? "My assignments" : "Assignments")
                         .font(.largeTitle)
                         .fontWeight(.bold)
                     Spacer()
                     
-                    Button(action:{
-                        router.push(AssignmentRoute.create)
-                    },label:{
-                        Image(systemName: "plus")
-                            .font(.title2)
-                            .foregroundStyle(Color.white)
-                            .frame(maxWidth: 50,maxHeight: 50)
-                            .background(Color.primary)
-                            .clipShape(Circle())
-                            .shadow( radius: 10, y: 2)
-                        
-                    })
+                    if !isStudent {
+                        Button(action:{
+                            router.push(AssignmentRoute.create)
+                        },label:{
+                            Image(systemName: "plus")
+                                .font(.title2)
+                                .foregroundStyle(Color.white)
+                                .frame(maxWidth: 50,maxHeight: 50)
+                                .background(Color.primary)
+                                .clipShape(Circle())
+                                .shadow( radius: 10, y: 2)
+                            
+                        })
+                    }
                 }
                 
                 // MARK: Filters
@@ -113,7 +124,7 @@ struct AllTeacherAssignmentView: View {
                 PDFScreen( pdfURL: "https://www.ioactive.com/wp-content/uploads/pdfs/IOActive_Remote_Car_Hacking.pdf")
             }
             .task {
-                await viewModel.allTeacherAssignment()
+                await viewModel.allTeacherAssignment(teacherId: teacherFilterId)
                 }
             // The first .task only runs once, so when the teacher pops
             // back here after viewing/updating/deleting an assignment
@@ -121,7 +132,7 @@ struct AllTeacherAssignmentView: View {
             .onAppear {
                 if hasAppeared {
                     Task {
-                        await viewModel.allTeacherAssignment()
+                        await viewModel.allTeacherAssignment(teacherId: teacherFilterId)
                     }
                 }
                 hasAppeared = true

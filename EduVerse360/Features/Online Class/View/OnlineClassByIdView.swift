@@ -7,6 +7,7 @@ struct OnlineClassByIdView: View {
     @State private var showDeleteConfirmation = false
     @State private var hasAppeared = false
     @Environment(TabRouter.self) private var router
+    @Environment(UserSession.self) private var session
 
     let onlineClassId: Int
 
@@ -316,39 +317,41 @@ struct OnlineClassByIdView: View {
                         )
                         .padding(.horizontal, 25)
                         
-                        HStack(spacing:15){
-                            Button(action:{
-                                router.push(OnlineClassRoute.update(id: onlineClassId))
-                            },label:{
-                                Text("Update")
+                        if session.activeRole != .student {
+                            HStack(spacing:15){
+                                Button(action:{
+                                    router.push(OnlineClassRoute.update(id: onlineClassId))
+                                },label:{
+                                    Text("Update")
+                                        .fontWeight(.semibold)
+                                        .foregroundStyle(Color.white)
+                                        .frame(maxWidth: .infinity, minHeight: 50)
+                                        .background(Color.primary)
+                                        .clipShape(RoundedRectangle(cornerRadius: 12))
+                                })
+
+                                Button(action:{
+                                    showDeleteConfirmation = true
+                                },label:{
+                                    Group {
+                                        if deleteViewModel.isLoading {
+                                            ProgressView()
+                                                .tint(.white)
+                                        } else {
+                                            Text("Delete Class")
+                                        }
+                                    }
                                     .fontWeight(.semibold)
                                     .foregroundStyle(Color.white)
                                     .frame(maxWidth: .infinity, minHeight: 50)
-                                    .background(Color.primary)
+                                    .background(Color.red)
                                     .clipShape(RoundedRectangle(cornerRadius: 12))
-                            })
+                                })
+                                .disabled(deleteViewModel.isLoading)
 
-                            Button(action:{
-                                showDeleteConfirmation = true
-                            },label:{
-                                Group {
-                                    if deleteViewModel.isLoading {
-                                        ProgressView()
-                                            .tint(.white)
-                                    } else {
-                                        Text("Delete Class")
-                                    }
-                                }
-                                .fontWeight(.semibold)
-                                .foregroundStyle(Color.white)
-                                .frame(maxWidth: .infinity, minHeight: 50)
-                                .background(Color.red)
-                                .clipShape(RoundedRectangle(cornerRadius: 12))
-                            })
-                            .disabled(deleteViewModel.isLoading)
-
+                            }
+                            .padding(.horizontal, 25)
                         }
-                        .padding(.horizontal, 25)
                     }
 
                 }

@@ -22,7 +22,7 @@ EduVerse360/
 ├── App/                   # app-wide plumbing
 │   ├── AuthRouter.swift   # @Observable AuthRouter (logged-out NavigationPath, push/pop/popToRoot)
 │   ├── TabRouter.swift    # @Observable TabRouter (per-AppTab paths, push/pop/popToRoot/reset)
-│   ├── AppTab.swift       # AppTab enum (tabs per role, rootView(role:), title/icon)
+│   ├── AppTab.swift       # AppTab enum (tabs per role, rootView(role:), title/icon); role-gated roots: `.work` → AllTeacherAssignmentView (teacher: own items via `teacherId` filter; student: read-only) or AdminWorkView (admins: segmented Assignments/Online Classes), `.classes` → ListOnlineClassView (teacher/student) or AllClassesView (admins)
 │   ├── FeatureDestinations.swift  # featureDestinations() modifier registering all route enums
 │   ├── UserSession.swift  # @Observable UserSession (token, user, role, activeRole, isLoggedIn)
 │   ├── LoadingView.swift, Spinner.swift, AppTextField.swift

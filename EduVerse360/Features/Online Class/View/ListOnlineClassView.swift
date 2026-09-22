@@ -4,8 +4,16 @@ import SwiftUI
 struct ListOnlineClassView: View {
 
     @Environment(TabRouter.self) private var router
+    @Environment(UserSession.self) private var session
     @State private var viewModel = ListOnlineClassViewModel()
-  
+
+    private var teacherFilterId: Int? {
+        session.activeRole == .teacher ? session.user?.id : nil
+    }
+
+    private var isStudent: Bool {
+        session.activeRole == .student
+    }
 
     var body: some View {
 
@@ -208,31 +216,33 @@ struct ListOnlineClassView: View {
 
 
             // MARK: - Create Class Button
-            Button {
+            if !isStudent {
+                Button {
 
-                router.push(OnlineClassRoute.create)
+                    router.push(OnlineClassRoute.create)
 
-            } label: {
+                } label: {
 
-                Image(systemName: "plus")
-                    .font(.system(size: 22, weight: .bold))
-                    .foregroundColor(.white)
-                    .frame(width: 58, height: 58)
-                    .background(Color.primary)
-                    .clipShape(Circle())
-                    .shadow(
-                        color: .black.opacity(0.25),
-                        radius: 8,
-                        x: 0,
-                        y: 4
-                    )
+                    Image(systemName: "plus")
+                        .font(.system(size: 22, weight: .bold))
+                        .foregroundColor(.white)
+                        .frame(width: 58, height: 58)
+                        .background(Color.primary)
+                        .clipShape(Circle())
+                        .shadow(
+                            color: .black.opacity(0.25),
+                            radius: 8,
+                            x: 0,
+                            y: 4
+                        )
+                }
+                .padding(.trailing, 25)
+                .padding(.bottom, 25)
             }
-            .padding(.trailing, 25)
-            .padding(.bottom, 25)
         }
         .onAppear {
             Task {
-                await viewModel.getListOnlineClass()
+                await viewModel.getListOnlineClass(teacherId: teacherFilterId)
             }
         }
     }

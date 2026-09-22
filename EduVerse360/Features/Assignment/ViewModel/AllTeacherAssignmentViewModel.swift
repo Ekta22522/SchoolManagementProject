@@ -63,7 +63,7 @@ private var assignments: [Assignment] = []
         }
     }
     
-    func allTeacherAssignment () async {
+    func allTeacherAssignment (teacherId: Int? = nil) async {
         isLoading = true
         print("All Teacher assignment process is started")
         
@@ -76,7 +76,11 @@ private var assignments: [Assignment] = []
             let response: AllTeacherAssignmentRes = try await allTeacherAssignmentService.getAllAssignment()
             isSuccess = true
             print("All Teacher assignment fetched successfully")
-            assignments = response.data
+            if let teacherId {
+                assignments = response.data.filter { $0.teacherId == teacherId }
+            } else {
+                assignments = response.data
+            }
             filterAssignment(status: selectedFilter)
         }catch{
             errorMessage = error.localizedDescription

@@ -44,16 +44,16 @@ enum AppTab: String, Hashable {
             HomeView()
         case .work:
             switch role {
-            case .teacher:
+            case .teacher, .student:
                 AllTeacherAssignmentView()
-            default:
-                TeacherOnlyView()
+            case .schoolAdmin, .superAdmin:
+                AdminWorkView()
             }
         case .classes:
             switch role {
-            case .teacher:
+            case .teacher, .student:
                 ListOnlineClassView()
-            default:
+            case .schoolAdmin, .superAdmin:
                 AllClassesView()
             }
         case .students:
@@ -69,10 +69,8 @@ enum AppTab: String, Hashable {
         switch role {
         case .schoolAdmin, .superAdmin:
             return [.home, .work, .students, .classes, .teachers, .settings]
-        case .teacher:
+        case .teacher, .student:
             return [.home, .work, .classes, .settings]
-        case .student:
-            return [.home, .classes, .settings]
         }
     }
 }

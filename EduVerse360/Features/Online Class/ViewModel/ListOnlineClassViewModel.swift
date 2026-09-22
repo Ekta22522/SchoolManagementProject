@@ -29,7 +29,7 @@ class ListOnlineClassViewModel {
     init(listonlineclassservice : OnlineClassProtocol = OnlineClassProtocolImp()){
         self.listOnlineClassService = listonlineclassservice
     }
-    func getListOnlineClass ()async {
+    func getListOnlineClass (teacherId: Int? = nil)async {
         print("Listing online class is started")
         isLoading = true
         
@@ -39,7 +39,11 @@ class ListOnlineClassViewModel {
         }
         do{
             let response : ListOnlineClassRes = try await self.listOnlineClassService.readAllOnlineClass()
-            onlineClass = response.data
+            if let teacherId {
+                onlineClass = response.data.filter { $0.teacherId == teacherId }
+            } else {
+                onlineClass = response.data
+            }
             isListOnlineClassSuccess = true
             print("Successfully done",isListOnlineClassSuccess)
         }catch{
