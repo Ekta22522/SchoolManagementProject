@@ -9,7 +9,7 @@ Separate what each role can see and do in EduVerse360:
 
 - **Teacher**: sees only their own assignments and online classes; can create, update, and delete them; sees the lists.
 - **Student**: sees assignments and online classes read-only (list + detail, including assignment PDFs). No create/update/delete anywhere.
-- **School admin / super admin**: authorized everywhere and see everything — every screen, button, tab, and route is available to them with no role gating applied. They see all teachers' assignments and online classes (unfiltered) and can manage them (full CRUD), plus the existing school-classes, students, teachers tabs.
+- **School admin / super admin**: authorized everywhere and see everything — every screen, button, tab, and route is available to them with no role gating applied. Their Work tab shows all teachers' assignments and online classes in one place (segmented control). They can manage all of it (full CRUD), plus the existing school-classes (with a cleaned-up list UI), students, teachers tabs.
 
 ## Context (current state)
 
@@ -77,6 +77,16 @@ Admins see **all teacher work in one tab**: every teacher's assignments and ever
 
 No changes. They remain reachable only via the gated buttons/routes.
 
+### 7. Class list UI cleanup — `AllClassesView`
+
+The current header is a crowded `HStack(spacing: 50)` with an "Online Class" button, a title, and an "Add" button squeezed together, above a plain `List`. Redesign:
+
+- **Header**: left-aligned `Text("All Classes")` in `.largeTitle`/bold, `Spacer()`, then a circular `+` button (same style as the assignment list's create button: white glyph, `Color.primary` circle, shadow) pushing `ClassRoute.create`. Remove the old inline title and both text buttons.
+- **Drop the "Online Class" button**: under this design the admin Work tab already shows all online classes via its segmented control, so the shortcut is redundant.
+- **Rows**: replace the plain `List` with a `ScrollView` + `LazyVStack` of card rows matching the online-class card style (`ListOnlineClassView`): white card, `RoundedRectangle(cornerRadius: 16)`, subtle gray stroke, soft shadow, on `Color.pageBackground`. Each row shows the class name (headline/bold) and description (secondary, lineLimit 2) with a trailing chevron; tap pushes `ClassRoute.detail(id:)` as today.
+- **Empty state**: icon + "No classes yet" message (matching the online-class empty state pattern) instead of a blank list.
+- Remove `.navigationTitle("All Classes")` since the header now carries the title.
+
 ## Data flow
 
 `UserSession` is already injected app-wide (`EduVerse360App.swift`), so views only add an `@Environment` read. No storage or API changes: the same `api/assignments` and `api/online-classes` list endpoints are used; filtering is client-side.
@@ -98,6 +108,7 @@ No test targets exist in the repo (see AGENTS.md). Verification:
    - teacher: sees only own assignments/online classes; create/update/delete work.
    - student: sees both lists and details (incl. PDF); no `+`, Update, or Delete anywhere.
    - school admin and super admin: Work tab shows all teachers' assignments and online classes via the segmented control, full manage on both — no button or tab is ever hidden from admin roles.
+   - admin Classes tab: header is title + circular `+` only, rows render as cards, empty state shows when there are no classes.
 
 ## Out of scope
 
