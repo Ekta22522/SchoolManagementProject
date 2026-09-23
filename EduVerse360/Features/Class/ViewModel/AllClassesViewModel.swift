@@ -24,6 +24,7 @@ class AllClassesViewModel{
         print("Fetching all classes...")
         
         isLoading = true
+        errorMessage = nil
         defer{
             isLoading = false
             print("disclose all classes")

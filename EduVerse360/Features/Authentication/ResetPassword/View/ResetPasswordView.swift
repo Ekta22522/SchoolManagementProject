@@ -66,8 +66,8 @@ struct ResetPasswordView: View {
                              text: $viewModel.confirmPassword,
                              focusedField: $focusedField)
 
-                if let erroMessage = viewModel.erroMessage {
-                    Text(erroMessage)
+                if let errorMessage = viewModel.errorMessage {
+                    Text(errorMessage)
                         .font(.caption)
                         .foregroundColor(.red)
                         .multilineTextAlignment(.center)

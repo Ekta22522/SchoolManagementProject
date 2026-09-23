@@ -14,21 +14,23 @@ class TeacherDetailViewModel{
  let teacherService : TeacherProtocol
     
     var teacher : UserModel?
-    
+
+    var errorMessage : String?
+
     init(teacherService: TeacherProtocol) {
         self.teacherService = teacherService
     }
-    
-   
-    
+
+
+
     func loadTeacherDetail(by id: Int)async{
-        
+        errorMessage = nil
         do{
             teacher = try await teacherService.getTeachers(by: id)
         }catch let error{
-            
+            errorMessage = error.localizedDescription
         }
-        
+
     }
 }
 

@@ -26,6 +26,7 @@ class ClassViewModel{
     
     func classes () async {
         isLoading = true
+        errorMessage = nil
         print("Class processing is started")
         
         defer{

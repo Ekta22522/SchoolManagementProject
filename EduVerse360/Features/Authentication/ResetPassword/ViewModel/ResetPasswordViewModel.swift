@@ -13,7 +13,7 @@ class ResetPasswordViewModel{
     var password = ""
     var confirmPassword = ""
     var emailError:String?
-    var erroMessage : String?
+    var errorMessage : String?
     var isLoading = false
     var isResetPasswordSucess = false
     
@@ -35,7 +35,7 @@ class ResetPasswordViewModel{
             isResetPasswordSucess = true
             print("Password reset Sucessfully",isResetPasswordSucess)
         }catch let error{
-            erroMessage.self = error.localizedDescription
+            errorMessage.self = error.localizedDescription
         }
     }
 }

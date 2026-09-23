@@ -13,7 +13,7 @@ class StudentByIdViewModel{
     var student : Student?
     var isLoading = false
     var isSuccess = false
-    var erroMessage : String?
+    var errorMessage : String?
     
     private var studentByIdService : StudentProtocol
     
@@ -34,7 +34,7 @@ class StudentByIdViewModel{
             isSuccess = true
             print("Student By ID fetched Succesffully")
         }catch{
-            erroMessage = error.localizedDescription
+            errorMessage = error.localizedDescription
         }
     }
 }

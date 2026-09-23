@@ -25,6 +25,7 @@ class ClassByIdViewModel {
     
     func getClassesById(id: String) async {
         isLoading = true
+        errorMessage = nil
         print("Fetching Classes By Id")
         
         defer {

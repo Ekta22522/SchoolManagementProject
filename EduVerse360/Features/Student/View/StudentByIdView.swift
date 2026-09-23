@@ -17,7 +17,7 @@ struct StudentByIdView: View {
     var body: some View {
         ScrollView {
             VStack(spacing: 16) {
-                if let errorMessage = viewModel.erroMessage {
+                if let errorMessage = viewModel.errorMessage {
                     Text(errorMessage)
                         .font(.subheadline)
                         .foregroundStyle(.red)

@@ -24,6 +24,7 @@ class ProfileViewModel{
     func getProfileData() async{
      print("profile processing is started")
     isLoading = true
+        errorMessage = nil
         defer{
             isLoading = false
             print("profile disclose")
